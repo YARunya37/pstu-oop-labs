@@ -1,0 +1,34 @@
+## Очередь сборки и результаты компиляции (артефакты)
+[Bb]in/
+[Oo]bj/
+[Log]/
+
+## Папки пользовательских настроек IDE (Visual Studio, Rider, VS Code)
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Результаты тестов и метрики
+TestResults/
+*.trx
+*.coverage
+
+## Пакеты и зависимости NuGet
+packages/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+## Локальные файлы конфигурации (секреты, которые нельзя пушить)
+appsettings.Development.json
+*.usersecrets.json
+
+## Логи и временные файлы системы
+*.log
+.DS_Store
+Thumbs.db
