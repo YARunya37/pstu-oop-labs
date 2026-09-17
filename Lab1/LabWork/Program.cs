@@ -49,6 +49,22 @@ namespace LabWork
             return value;
         }
 
+        static void ComputeExpressions(int n, int m)
+        {
+            int result1 = n++*m;
+            bool result2 = m--<n;
+            bool result3 = ++m>n;
+            Console.Write($"n++*m = {result1}\t");
+            Console.Write($"m--<n = {result2}\t");
+            Console.WriteLine($"++m>n = {result3}");
+            
+        }
+
+        static double CalculateFunction(double x)
+        {
+            return Math.Sqrt(x + Math.Pow(Math.Abs(x), 1.0/4)) + x;
+        }
+
         static void Main(string[] args)
         {
                 
@@ -95,22 +111,6 @@ namespace LabWork
                 (MathF.Pow((aFloat+bFloat), 4) - MathF.Pow(aFloat, 4))/
                 (6*aFloat*aFloat*bFloat*bFloat + 4*aFloat*MathF.Pow(bFloat, 3) + MathF.Pow(bFloat, 4) + 4*MathF.Pow(aFloat, 3)* bFloat)
                 );
-        }
-
-        static void ComputeExpressions(int n, int m)
-        {
-            int result1 = n++*m;
-            bool result2 = m--<n;
-            bool result3 = ++m>n;
-            Console.Write($"n++*m = {result1}\t");
-            Console.Write($"m--<n = {result2}\t");
-            Console.WriteLine($"++m>n = {result3}");
-            
-        }
-
-        static double CalculateFunction(double x)
-        {
-            return Math.Sqrt(x + Math.Pow(Math.Abs(x), 1.0/4)) + x;
         }
     }
 }
