@@ -5,8 +5,10 @@ namespace LabWork
     class Program
     {
 
-        static int GetInt()
+        static int GetInt(string message)
         {
+            Console.Write(message);
+
             bool isParsed = false;
             int value = 0;
 
@@ -20,11 +22,15 @@ namespace LabWork
                 }
             }while(!isParsed);
 
+            Console.WriteLine();
+
             return value;
         }
 
-        static double GetDouble()
+        static double GetDouble(string message)
         {
+            Console.Write(message);
+
             bool isParsed = false;
             double value = 0;
 
@@ -38,25 +44,24 @@ namespace LabWork
                 }
             } while (!isParsed);
 
+            Console.WriteLine();
+
             return value;
         }
 
         static void Main(string[] args)
         {
-
+                
             // Задание 1
-            System.Console.WriteLine(" Задание 1");
-            System.Console.Write("n?");
-            int n = GetInt();
-            System.Console.WriteLine();
-            System.Console.Write("m?");
-            int m = GetInt();
-            System.Console.WriteLine();
+            Console.WriteLine(" Задание 1");
+
+            int n = GetInt("n?");
+
+            int m = GetInt("m?");
 
             ComputeExpressions(n, m);
 
-            System.Console.Write("x?");
-            int x = GetInt();
+            int x = GetInt("x?");
             
             double result4 = CalculateFunction(x);
 
@@ -67,9 +72,9 @@ namespace LabWork
                 Console.WriteLine("Нельзя посчитать значение корня от отрицательного выражения!");
             
             // Задание 2
-            System.Console.WriteLine("\n Задание 2");
-            double x1 = GetDouble();
-            double y1 = GetDouble();
+            Console.WriteLine("\n Задание 2");
+            double x1 = GetDouble("Введите координату x: ");
+            double y1 = GetDouble("Введите координату y: ");
             
             // Точка лежит в пределах единичной окружности (x² + y² <= 1) 
             // И строго во II или IV четверти (где x и y имеют разные знаки, т.е. их произведение x * y < 0)
@@ -77,7 +82,7 @@ namespace LabWork
             Console.WriteLine($"Точка принадлежит заштрихованной области: {isValid}");
 
             // Задание 3
-            System.Console.WriteLine("\n Задание 3");
+            Console.WriteLine("\n Задание 3");
             double a = 1000;
             double b = 0.0001;
             float aFloat = 1000f;
