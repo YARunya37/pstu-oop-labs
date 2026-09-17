@@ -54,9 +54,9 @@ namespace LabWork
             int result1 = n++*m;
             bool result2 = m--<n;
             bool result3 = ++m>n;
-            Console.Write($"n++*m = {result1}\t");
-            Console.Write($"m--<n = {result2}\t");
-            Console.WriteLine($"++m>n = {result3}");
+            Console.Write($"m={m} n={n} n++*m = {result1}\t");
+            Console.Write($"m={m} n={n} m--<n = {result2}\t");
+            Console.WriteLine($"m={m} n={n} ++m>n = {result3}");
             
         }
 
