@@ -62,7 +62,15 @@ namespace LabWork
 
         static double CalculateFunction(double x)
         {
-            return Math.Sqrt(x + Math.Pow(Math.Abs(x), 1.0/4)) + x;
+            double expression = x + Math.Pow(Math.Abs(x), 1.0/4); 
+
+            if(expression < 0)
+            {
+                Console.WriteLine("Нельзя посчитать значение корня от отрицательного выражения!");
+                return double.NaN;
+            }
+
+            return Math.Sqrt(expression) + x;
         }
 
         static void CompareDataTypes(){
@@ -100,8 +108,7 @@ namespace LabWork
             // Результат будет равен NaN в случае если мы попытаемся взять отрицательный корень
             if(!double.IsNaN(result4))
                 Console.WriteLine(result4);
-            else
-                Console.WriteLine("Нельзя посчитать значение корня от отрицательного выражения!");
+            
             
             // Задание 2
             Console.WriteLine("\n Задание 2");
