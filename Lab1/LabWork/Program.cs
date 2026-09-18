@@ -65,6 +65,22 @@ namespace LabWork
             return Math.Sqrt(x + Math.Pow(Math.Abs(x), 1.0/4)) + x;
         }
 
+        static void CompareDataTypes(){
+            double a = 1000;
+            double b = 0.0001;
+            float aFloat = 1000f;
+            float bFloat = 0.0001f;
+
+            Console.WriteLine("Double: {0} \t Float: {1} \t Должно быть: 1", 
+
+                (Math.Pow((a+b), 4) - Math.Pow(a, 4))/
+                (6*a*a*b*b + 4*a*Math.Pow(b, 3) + Math.Pow(b, 4) + 4*Math.Pow(a, 3)* b),
+
+                (MathF.Pow((aFloat+bFloat), 4) - MathF.Pow(aFloat, 4))/
+                (6*aFloat*aFloat*bFloat*bFloat + 4*aFloat*MathF.Pow(bFloat, 3) + MathF.Pow(bFloat, 4) + 4*MathF.Pow(aFloat, 3)* bFloat)
+            );
+        }
+
         static void Main(string[] args)
         {
                 
@@ -98,19 +114,9 @@ namespace LabWork
             Console.WriteLine($"Точка принадлежит заштрихованной области: {isValid}");
 
             // Задание 3
-            Console.WriteLine("\n Задание 3");
-            double a = 1000;
-            double b = 0.0001;
-            float aFloat = 1000f;
-            float bFloat = 0.0001f;
+            Console.WriteLine("\n Задание 3. Сравнение double и float");
             
-            Console.WriteLine("Double: {0} \t Float: {1} \t Должно быть: 1", 
-                (Math.Pow((a+b), 4) - Math.Pow(a, 4))/
-                (6*a*a*b*b + 4*a*Math.Pow(b, 3) + Math.Pow(b, 4) + 4*Math.Pow(a, 3)* b),
-
-                (MathF.Pow((aFloat+bFloat), 4) - MathF.Pow(aFloat, 4))/
-                (6*aFloat*aFloat*bFloat*bFloat + 4*aFloat*MathF.Pow(bFloat, 3) + MathF.Pow(bFloat, 4) + 4*MathF.Pow(aFloat, 3)* bFloat)
-                );
+            CompareDataTypes();
         }
     }
 }
