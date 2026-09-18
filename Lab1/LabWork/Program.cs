@@ -101,7 +101,7 @@ namespace LabWork
 
             ComputeExpressions(n, m);
 
-            int x = GetInt("x?");
+            double x = GetDouble("x?");
             
             double result4 = CalculateFunction(x);
 
