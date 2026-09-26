@@ -52,10 +52,10 @@ namespace LabWork
         static void ComputeExpressions(int n, int m)
         {
             int result1 = n++*m;
-            bool result2 = m--<n;
-            bool result3 = ++m>n;
             Console.Write($"m={m} n={n} n++*m = {result1}\t");
+            bool result2 = m--<n;
             Console.Write($"m={m} n={n} m--<n = {result2}\t");
+            bool result3 = ++m>n;
             Console.WriteLine($"m={m} n={n} ++m>n = {result3}");
             
         }
@@ -70,7 +70,7 @@ namespace LabWork
                 return double.NaN;
             }
 
-            return Math.Sqrt(expression) + x;
+            return Math.Sqrt(expression) + Math.Abs(x);
         }
 
         static void CompareDataTypes(){
@@ -93,7 +93,7 @@ namespace LabWork
         {
                 
             // Задание 1
-            Console.WriteLine(" Задание 1");
+            Console.WriteLine(" Задание 1. Вычисление выражений");
 
             int n = GetInt("n?");
 
@@ -111,7 +111,7 @@ namespace LabWork
             
             
             // Задание 2
-            Console.WriteLine("\n Задание 2");
+            Console.WriteLine("\n Задание 2. Принадлежность точки заштрихованной области");
             double x1 = GetDouble("Введите координату x: ");
             double y1 = GetDouble("Введите координату y: ");
             
