@@ -26,6 +26,10 @@ namespace Lab3
             return value;
         }
 
+        static bool IsPositive(int value)
+        {
+            return value > 0;
+        }
 
         static void Main(string[] args)
         {
@@ -37,6 +41,12 @@ namespace Lab3
 
             // Количество шагов
             int k = GetInt($"Введите количество шагов, на которые разобъем отрезок [{a}, {b}]: ");
+            while (!IsPositive(k))
+            {
+                Console.WriteLine("Ошибка ввода! Количество шагов должно быть больше нуля!");
+                k = GetInt($"Введите количество шагов, на которые разобъем отрезок [{a}, {b}]: ");
+            }
+
 
             double step = (b-a)/k;
 
