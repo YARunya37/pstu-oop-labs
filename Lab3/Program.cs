@@ -4,33 +4,7 @@ namespace Lab3
 {
     class Program
     {
-        static int GetInt(string message)
-        {
-            Console.Write(message);
-
-            bool isParsed = false;
-            int value = 0;
-
-            do
-            {
-                isParsed = int.TryParse(Console.ReadLine(), out value);
-
-                if (!isParsed)
-                {
-                    Console.WriteLine("Некорректный ввод! Ожидаются целые числа");
-                }
-            }while(!isParsed);
-
-            Console.WriteLine();
-
-            return value;
-        }
-
-        static bool IsPositive(int value)
-        {
-            return value > 0;
-        }
-
+        
         static void Main(string[] args)
         {
             double a = 0.1, b = 0.8;
@@ -40,13 +14,7 @@ namespace Lab3
             Console.WriteLine("Вычисление функций с использованием их разложения в   степенной ряд\n");
 
             // Количество шагов
-            int k = GetInt($"Введите количество шагов, на которые разобъем отрезок [{a}, {b}]: ");
-            while (!IsPositive(k))
-            {
-                Console.WriteLine("Ошибка ввода! Количество шагов должно быть больше нуля!");
-                k = GetInt($"Введите количество шагов, на которые разобъем отрезок [{a}, {b}]: ");
-            }
-
+            int k = 10;
 
             double step = (b-a)/k;
 
