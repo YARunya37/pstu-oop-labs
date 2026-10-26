@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace UserInput;
 
-public static class ReadInput
+public static class ReadString
 {
     public static T ReadValue<T>(string message, string errorMessage = "") where T:INumber<T>
     {
