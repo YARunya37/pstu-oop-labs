@@ -4,7 +4,6 @@ namespace Lab3
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             double a = 0.1, b = 0.8;
@@ -12,22 +11,23 @@ namespace Lab3
             int n = 35;
 
             Console.WriteLine("Вычисление функций с использованием их разложения в   степенной ряд\n");
-
             // Количество шагов
             int k = 10;
 
             double step = (b-a)/k;
-
+            
             for (double x = a; x <= b + step/2; x+= step)
             {
                 // Вычисление суммы ряда для заданного количества членов n
 
                 double SN = 0;
 
+                double lastPower = 1;
                 for (int _i = 1; _i <= n; _i++)
                 {
-                    double ai = Math.Pow(x, _i) * Math.Cos(_i * Math.PI / 3) / _i;
-                    SN += ai;
+                    lastPower *= x;
+                    double _ai = lastPower * Math.Cos(_i * Math.PI / 3) / _i;
+                    SN += _ai;
                 }   
 
 
@@ -36,12 +36,14 @@ namespace Lab3
                 double SE = 0;
                 int i = 1;
 
-                while (true)
-                {
-                    double ai = Math.Pow(x, i) * Math.Cos(i * Math.PI / 3) / i;
 
-                    if (Math.Abs(ai) < e)
-                        break;
+                lastPower = 1;
+                double ai = x * Math.Cos(i * Math.PI / 3) / i;
+                
+                while (Math.Abs(ai) >= e)
+                {
+                    lastPower*=x;
+                    ai = lastPower * Math.Cos(i * Math.PI / 3) / i;
 
                     SE += ai;
                     i++;
