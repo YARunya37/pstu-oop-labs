@@ -23,18 +23,24 @@ public class Program
         Console.WriteLine("\nИсходный массив:");
         ArrayIO.PrintArray(matrix);
 
-        int k = ReadString.ReadValue<int>("Номер столбца для удаления (нумерация с 1): ");
+        bool correctAnswer = false;
 
-        try
+        while (!correctAnswer)
         {
-            matrix = RemoveColumn(matrix, k);
+            int k = ReadString.ReadValue<int>("Номер столбца для удаления (нумерация с 1): ");
 
-            Console.WriteLine("\nМассив после удаления столбца:");
-            ArrayIO.PrintArray(matrix);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка: {ex.Message}");
+            try
+            {
+                matrix = RemoveColumn(matrix, k);
+
+                Console.WriteLine("\nМассив после удаления столбца:");
+                ArrayIO.PrintArray(matrix);
+                correctAnswer = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
         }
     }
 
@@ -49,13 +55,16 @@ public class Program
         while (!validInput)
         {
             int choice = ReadString.ReadValue<int>("Выбор: ");
+            
             switch (choice)
             {
                 case 1:
                     ArrayIO.FillArrayWithInput(matrix);
+                    validInput = true;
                     break;
                 case 2:
                     ArrayIO.FillArrayWithRandom(matrix);
+                    validInput = true;
                     break;
                 default:
                     Console.WriteLine("Нет такого пункта меню.");
@@ -113,29 +122,29 @@ public class Program
         Console.WriteLine("\nИсходный рваный массив:");
         ArrayIO.PrintArray(array);
 
-        int k = ReadString.ReadValue<int>("Количество строк для добавления: ");
+        int k = ReadString.ReadPositiveValue<int>("Количество строк для добавления: ");
 
-        if (k < 0)
-        {
-            Console.WriteLine("Ошибка: количество добавляемых строк не может быть отрицательным.");
-            return;
-        }
 
         Console.WriteLine("1. Ввод новых строк вручную");
         Console.WriteLine("2. Заполнение новых строк случайными числами");
 
-        int mode = ReadString.ReadValue<int>("Выбор: ");
-
-        try
+        bool correctAnswer = false;
+        while (!correctAnswer)
         {
-            array = AddRows(array, k, mode == 2);
+            int mode = ReadString.ReadValue<int>("Выбор: ");
 
-            Console.WriteLine("\nРваный массив после добавления строк:");
-            ArrayIO.PrintArray(array);
-        }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            Console.WriteLine($"Ошибка: {ex.Message}");
+            try
+            {
+                array = AddRows(array, k, mode == 2);
+
+                Console.WriteLine("\nРваный массив после добавления строк:");
+                ArrayIO.PrintArray(array);
+                correctAnswer = true;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
         }
     }
 
@@ -145,19 +154,22 @@ public class Program
         Console.WriteLine("1. Заполнить вручную");
         Console.WriteLine("2. Заполнить случайными числами");
 
-        int choice = ReadString.ReadValue<int>("Выбор: ");
 
         bool validChoice = false;
 
         while (!validChoice)
         {
+            int choice = ReadString.ReadValue<int>("Выбор: ");
+            
             switch (choice)
             {
                 case 1:
                     ArrayIO.FillArrayWithInput(array);
+                    validChoice = true;
                     break;
                 case 2:
                     ArrayIO.FillArrayWithRandom(array);
+                    validChoice = true;
                     break;
                 default:
                     Console.WriteLine("Нет такого пункта в меню.");
@@ -191,6 +203,8 @@ public class Program
         for (int i = array.Length; i < result.Length; i++)
         {
             int size = ReadString.ReadPositiveValue<int>($"Количество элементов в новой строке {i + 1}: ");
+
+            result[i] = new T[size];
 
             // Заполнение массива в строке
             if (randomFill)
