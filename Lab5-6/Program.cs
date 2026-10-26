@@ -6,38 +6,6 @@ using IOUtils;
 
 public class Program
 {
-    public static void Main()
-    {
-        while (true)
-        {
-            Console.WriteLine("\n========= ГЛАВНОЕ МЕНЮ =========");
-            Console.WriteLine("1. Двумерный массив");
-            Console.WriteLine("2. Рваный массив");
-            Console.WriteLine("3. Обработка строки");
-            Console.WriteLine("0. Выход");
-
-            int choice = ReadString.ReadValue<int>("Ваш выбор: ");
-
-            switch (choice)
-            {
-                case 1:
-                    HandleMatrix();
-                    break;
-                case 2:
-                    HandleJaggedArray();
-                    break;
-                case 3:
-                    HandleString();
-                    break;
-                case 0:
-                    return;
-                default:
-                    Console.WriteLine("Нет такого пункта меню.");
-                    break;
-            }
-        }
-    }
-
     // =========================================
     // ДВУМЕРНЫЙ МАССИВ
     // =========================================
@@ -64,11 +32,7 @@ public class Program
             Console.WriteLine("\nМассив после удаления столбца:");
             ArrayIO.PrintArray(matrix);
         }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            Console.WriteLine($"Ошибка: {ex.Message}");
-        }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
             Console.WriteLine($"Ошибка: {ex.Message}");
         }
@@ -80,40 +44,39 @@ public class Program
         Console.WriteLine("1. Заполнить вручную");
         Console.WriteLine("2. Заполнить случайными числами");
 
-        int choice = ReadString.ReadValue<int>("Выбор: ");
+        bool validInput = false;
 
-        switch (choice)
+        while (!validInput)
         {
-            case 1:
-                ArrayIO.FillArrayWithInput(matrix);
-                break;
-            case 2:
-                ArrayIO.FillArrayWithRandom(matrix);
-                break;
-            default:
-                Console.WriteLine(
-                    "Неверный выбор. Выполняется ручное заполнение.");
-                ArrayIO.FillArrayWithInput(matrix);
-                break;
+            int choice = ReadString.ReadValue<int>("Выбор: ");
+            switch (choice)
+            {
+                case 1:
+                    ArrayIO.FillArrayWithInput(matrix);
+                    break;
+                case 2:
+                    ArrayIO.FillArrayWithRandom(matrix);
+                    break;
+                default:
+                    Console.WriteLine("Нет такого пункта меню.");
+                    break;
+            }
         }
     }
 
-    private static T[,] RemoveColumn<T>(T[,] matrix, int k)
+    private static T[,] RemoveColumn<T>(T[,] matrix, int columnNumber)
     {
         int rows = matrix.GetLength(0);
         int columns = matrix.GetLength(1);
 
         if (rows == 0 || columns == 0)
         {
-            throw new InvalidOperationException(
-                "Нельзя удалить столбец из пустого массива.");
+            throw new InvalidOperationException("Нельзя удалить столбец из пустого массива.");
         }
 
-        if (k < 1 || k > columns)
+        if (columnNumber < 1 || columnNumber > columns)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(k),
-                "Столбца с таким номером не существует.");
+            throw new ArgumentOutOfRangeException(nameof(columnNumber), "Столбца с таким номером не существует.");
         }
 
         T[,] result = new T[rows, columns - 1];
@@ -124,7 +87,7 @@ public class Program
 
             for (int j = 0; j < columns; j++)
             {
-                if (j == k - 1)
+                if (j == columnNumber - 1)
                     continue;
 
                 result[i, newColumn] = matrix[i, j];
@@ -141,8 +104,7 @@ public class Program
 
     private static void HandleJaggedArray()
     {
-        int rows = ReadString.ReadPositiveValue<int>(
-            "Количество исходных строк: ");
+        int rows = ReadString.ReadPositiveValue<int>("Количество исходных строк: ");
 
         int[][] array = new int[rows][];
 
@@ -151,13 +113,11 @@ public class Program
         Console.WriteLine("\nИсходный рваный массив:");
         ArrayIO.PrintArray(array);
 
-        int k = ReadString.ReadValue<int>(
-            "Количество строк для добавления: ");
+        int k = ReadString.ReadValue<int>("Количество строк для добавления: ");
 
         if (k < 0)
         {
-            Console.WriteLine(
-                "Ошибка: количество добавляемых строк не может быть отрицательным.");
+            Console.WriteLine("Ошибка: количество добавляемых строк не может быть отрицательным.");
             return;
         }
 
@@ -187,76 +147,59 @@ public class Program
 
         int choice = ReadString.ReadValue<int>("Выбор: ");
 
-        switch (choice)
+        bool validChoice = false;
+
+        while (!validChoice)
         {
-            case 1:
-                ArrayIO.FillArrayWithInput(array);
-                break;
-            case 2:
-                ArrayIO.FillArrayWithRandom(array);
-                break;
-            default:
-                Console.WriteLine(
-                    "Неверный выбор. Выполняется ручное заполнение.");
-                ArrayIO.FillArrayWithInput(array);
-                break;
+            switch (choice)
+            {
+                case 1:
+                    ArrayIO.FillArrayWithInput(array);
+                    break;
+                case 2:
+                    ArrayIO.FillArrayWithRandom(array);
+                    break;
+                default:
+                    Console.WriteLine("Нет такого пункта в меню.");
+                    break;
+            }
         }
     }
 
-    private static T[][] AddRows<T>(
-        T[][] array,
-        int k,
-        bool randomFill = false)
+    private static T[][] AddRows<T>(T[][] array, int rowsNumber, bool randomFill = false)
         where T : System.Numerics.INumber<T>
     {
-        if (k < 0)
+        if (rowsNumber < 0)
         {
             throw new ArgumentOutOfRangeException(
-                nameof(k),
+                nameof(rowsNumber),
                 "Количество добавляемых строк не может быть отрицательным.");
         }
 
-        if (k == 0)
+        if (rowsNumber == 0)
             return array;
 
-        T[][] result = new T[array.Length + k][];
+        T[][] result = new T[array.Length + rowsNumber][];
 
+        // Идём по строчкам и копируем ссылки на массивы в каждой строке
         for (int i = 0; i < array.Length; i++)
             result[i] = array[i];
 
         Random random = new Random();
 
+        // Добавляем новые строки
         for (int i = array.Length; i < result.Length; i++)
         {
-            int size = ReadString.ReadPositiveValue<int>(
-                $"Количество элементов в новой строке {i + 1}: ");
+            int size = ReadString.ReadPositiveValue<int>($"Количество элементов в новой строке {i + 1}: ");
 
+            // Заполнение массива в строке
             if (randomFill)
             {
-                result[i] = new T[size];
-
-                for (int j = 0; j < size; j++)
-                {
-                    result[i][j] =
-                        T.CreateChecked(random.Next(1, 100));
-                }
+                ArrayIO.FillArrayWithRandom<T>(result[i]);
             }
             else
             {
-                while (true)
-                {
-                    T[] sequence = ReadString.ReadSequence<T>(
-                        $"Введите {size} чисел через пробел:");
-
-                    if (sequence.Length == size)
-                    {
-                        result[i] = sequence;
-                        break;
-                    }
-
-                    Console.WriteLine(
-                        "Количество элементов не совпадает с размером строки.");
-                }
+                ArrayIO.FillArrayWithInput<T>(result[i]);
             }
         }
 
@@ -269,33 +212,34 @@ public class Program
 
     private static void HandleString()
     {
-        string[] testStrings =
-        {
+        string testString =
             "В лесу родилась елочка! В лесу она росла. " +
-            "Зимой и летом стройная, зеленая была!"
-        };
+            "Зимой и летом стройная, зеленая была!";
 
         Console.WriteLine("1. Ввести строку с клавиатуры");
         Console.WriteLine("2. Использовать тестовую строку");
 
         int choice = ReadString.ReadValue<int>("Выбор: ");
 
-        string input;
+        string input = "";
 
-        switch (choice)
+        while (input == "")
         {
-            case 1:
-                Console.WriteLine("Введите строку:");
-                input = Console.ReadLine() ?? string.Empty;
-                break;
+            switch (choice)
+            {
+                case 1:
+                    Console.WriteLine("Введите строку:");
+                    input = Console.ReadLine() ?? string.Empty;
+                    break;
 
-            case 2:
-                input = testStrings[0];
-                break;
+                case 2:
+                    input = testString;
+                    break;
 
-            default:
-                Console.WriteLine("Неверный выбор.");
-                return;
+                default:
+                    Console.WriteLine("Неверный выбор.");
+                    break;
+            }
         }
 
         Console.WriteLine("\nИсходная строка:");
@@ -356,5 +300,40 @@ public class Program
         }
 
         return result + punctuation;
+    }
+
+    public static void Main()
+    {
+        bool programWorks = true;
+
+        while (programWorks)
+        {
+            Console.WriteLine("\n========= ГЛАВНОЕ МЕНЮ =========");
+            Console.WriteLine("1. Двумерный массив");
+            Console.WriteLine("2. Рваный массив");
+            Console.WriteLine("3. Обработка строки");
+            Console.WriteLine("0. Выход");
+
+            int choice = ReadString.ReadValue<int>("Ваш выбор: ");
+
+            switch (choice)
+            {
+                case 1:
+                    HandleMatrix();
+                    break;
+                case 2:
+                    HandleJaggedArray();
+                    break;
+                case 3:
+                    HandleString();
+                    break;
+                case 0:
+                    programWorks = false;
+                    break;
+                default:
+                    Console.WriteLine("Нет такого пункта меню.");
+                    break;
+            }
+        }
     }
 }
