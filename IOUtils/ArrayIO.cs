@@ -5,6 +5,59 @@ namespace IOUtils
     public static class ArrayIO
     {
         // =========================
+        // ОДНОМЕРНЫЙ МАССИВ
+        // =========================
+
+        public static void FillArrayWithRandom<T>(T[] array)
+    where T : INumber<T>
+        {
+            Random random = new Random();
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = T.CreateChecked(random.Next(1, 100));
+            }
+        }
+
+        public static void FillArrayWithInput<T>(T[] array)
+            where T : INumber<T>
+        {
+            T[] sequence;
+
+            do
+            {
+                sequence = ReadString.ReadSequence<T>($"Введите {array.Length} элементов массива через пробел:");
+
+                if (sequence.Length != array.Length)
+                {
+                    Console.WriteLine("Неверный ввод! Количество элементов должно соответствовать размеру массива.");
+                }
+            }
+            while (sequence.Length != array.Length);
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = sequence[i];
+            }
+        }
+
+        public static void PrintArray<T>(T[] array)
+        {
+            if (array.Length == 0)
+            {
+                Console.WriteLine("Массив пуст.");
+                return;
+            }
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.Write($"{array[i]}\t");
+            }
+
+            Console.WriteLine();
+        }
+
+        // =========================
         // ДВУМЕРНЫЙ МАССИВ
         // =========================
 
