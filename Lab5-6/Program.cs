@@ -275,7 +275,9 @@ public class Program
 
         MatchCollection sentences = Regex.Matches(
             text,
-            @"[^.!?]*[.!?]+|[^.!?]+$");
+            // Любое количество символов(не .!?), последний символ .?!
+            // ИЛИ любое кол-во символов без знака препинания на конце
+            @"[^.!?]*[.!?]|[^.!?]+$");
 
         string[] result = sentences
             .Cast<Match>()
@@ -288,7 +290,7 @@ public class Program
 
     private static string ProcessSentence(string sentence)
     {
-        Match ending = Regex.Match(sentence, @"[.!?]+$");
+        Match ending = Regex.Match(sentence, @"[.!?]$");
 
         string punctuation = ending.Success ? ending.Value : "";
 
@@ -298,14 +300,17 @@ public class Program
 
         MatchCollection words = Regex.Matches(
             body,
+            // [Любые буквы Unicode, любые цифры Unicode] - 1 и более
+            // Незахватывающая группа для сложных слов(через тире)
             @"[\p{L}\p{N}]+(?:[-'][\p{L}\p{N}]+)*");
 
         if (words.Count <= 2)
-            return punctuation;
+            return "";
 
         int start = words[0].Index + words[0].Length;
         int end = words[words.Count - 1].Index;
 
+        // Берём подстроку начиная от второго слова и заканчивая предпоследним
         string result = body.Substring(start, end - start).Trim();
 
         result = Regex.Replace(result, @"\s+", " ");
