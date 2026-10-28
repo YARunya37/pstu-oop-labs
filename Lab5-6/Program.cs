@@ -6,6 +6,24 @@ using IOUtils;
 
 public class Program
 {
+    private static int ReadChoice(string message, params int[] availableValues)
+    {
+        int value = 0;
+        bool isValid = false;
+
+        while (!isValid)
+        {
+            value = ReadString.ReadValue<int>(message);
+
+            if (availableValues.Contains(value))
+                isValid = true;
+            else
+                Console.WriteLine("Нет такого пункта меню.");
+        }
+
+        return value;
+    }
+
     // =========================================
     // ДВУМЕРНЫЙ МАССИВ
     // =========================================
@@ -50,26 +68,16 @@ public class Program
         Console.WriteLine("1. Заполнить вручную");
         Console.WriteLine("2. Заполнить случайными числами");
 
-        bool validInput = false;
+        int choice = ReadChoice("Выбор: ", 1, 2);
 
-        while (!validInput)
+        switch (choice)
         {
-            int choice = ReadString.ReadValue<int>("Выбор: ");
-
-            switch (choice)
-            {
-                case 1:
-                    ArrayIO.FillArrayWithInput(matrix);
-                    validInput = true;
-                    break;
-                case 2:
-                    ArrayIO.FillArrayWithRandom(matrix);
-                    validInput = true;
-                    break;
-                default:
-                    Console.WriteLine("Нет такого пункта меню.");
-                    break;
-            }
+            case 1:
+                ArrayIO.FillArrayWithInput(matrix);
+                break;
+            case 2:
+                ArrayIO.FillArrayWithRandom(matrix);
+                break;
         }
     }
 
@@ -129,32 +137,21 @@ public class Program
         Console.WriteLine("2. Заполнение новых строк случайными числами");
 
         bool correctAnswer = false;
-        bool correctInput = false;
-        while (!correctAnswer || !correctInput)
-        {   
-            int mode = ReadString.ReadValue<int>("Выбор: ");
+        while (!correctAnswer)
+        {
+            int mode = ReadChoice("Выбор: ", 1, 2);
 
-            if(mode == 1 || mode == 2)
-                correctInput = true;
-
-            if (correctInput)
+            try
             {
-                try
-                {
-                    array = AddRows(array, k, mode == 2);
+                array = AddRows(array, k, mode == 2);
 
-                    Console.WriteLine("\nРваный массив после добавления строк:");
-                    ArrayIO.PrintArray(array);
-                    correctAnswer = true;
-                }
-                catch (ArgumentOutOfRangeException ex)
-                {
-                    Console.WriteLine($"Ошибка: {ex.Message}");
-                }
+                Console.WriteLine("\nРваный массив после добавления строк:");
+                ArrayIO.PrintArray(array);
+                correctAnswer = true;
             }
-            else
+            catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine("Нет такого пункта меню.");
+                Console.WriteLine($"Ошибка: {ex.Message}");
             }
         }
     }
@@ -166,26 +163,16 @@ public class Program
         Console.WriteLine("2. Заполнить случайными числами");
 
 
-        bool validChoice = false;
+        int choice = ReadChoice("Выбор: ", 1, 2);
 
-        while (!validChoice)
+        switch (choice)
         {
-            int choice = ReadString.ReadValue<int>("Выбор: ");
-
-            switch (choice)
-            {
-                case 1:
-                    ArrayIO.FillArrayWithInput(array);
-                    validChoice = true;
-                    break;
-                case 2:
-                    ArrayIO.FillArrayWithRandom(array);
-                    validChoice = true;
-                    break;
-                default:
-                    Console.WriteLine("Нет такого пункта в меню.");
-                    break;
-            }
+            case 1:
+                ArrayIO.FillArrayWithInput(array);
+                break;
+            case 2:
+                ArrayIO.FillArrayWithRandom(array);
+                break;
         }
     }
 
@@ -241,29 +228,33 @@ public class Program
             "В лесу родилась елочка! В лесу она росла. " +
             "Зимой и летом стройная, зеленая была!";
 
-        Console.WriteLine("1. Ввести строку с клавиатуры");
-        Console.WriteLine("2. Использовать тестовую строку");
-
-
         string input = "";
+        bool inputReceived = false;
 
-        while (input == "")
+        while (!inputReceived)
         {
-            int choice = ReadString.ReadValue<int>("Выбор: ");
+            Console.WriteLine("1. Ввести строку с клавиатуры");
+            Console.WriteLine("2. Использовать тестовую строку");
+
+            int choice = ReadChoice("Выбор: ", 1, 2);
 
             switch (choice)
             {
                 case 1:
                     Console.WriteLine("Введите строку:");
                     input = Console.ReadLine() ?? string.Empty;
+                    inputReceived = input != "";
+
+                    if (!inputReceived)
+                    {
+                        Console.WriteLine("Была введена пустая строка\n");
+                    }
+
                     break;
 
                 case 2:
                     input = testString;
-                    break;
-
-                default:
-                    Console.WriteLine("Неверный выбор.");
+                    inputReceived = true;
                     break;
             }
         }
@@ -340,7 +331,7 @@ public class Program
             Console.WriteLine("3. Обработка строки");
             Console.WriteLine("0. Выход");
 
-            int choice = ReadString.ReadValue<int>("Ваш выбор: ");
+            int choice = ReadChoice("Ваш выбор: ", 0, 1, 2, 3);
 
             switch (choice)
             {
@@ -355,9 +346,6 @@ public class Program
                     break;
                 case 0:
                     programWorks = false;
-                    break;
-                default:
-                    Console.WriteLine("Нет такого пункта меню.");
                     break;
             }
         }
