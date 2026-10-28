@@ -55,7 +55,7 @@ public class Program
         while (!validInput)
         {
             int choice = ReadString.ReadValue<int>("Выбор: ");
-            
+
             switch (choice)
             {
                 case 1:
@@ -129,21 +129,32 @@ public class Program
         Console.WriteLine("2. Заполнение новых строк случайными числами");
 
         bool correctAnswer = false;
-        while (!correctAnswer)
-        {
+        bool correctInput = false;
+        while (!correctAnswer || !correctInput)
+        {   
             int mode = ReadString.ReadValue<int>("Выбор: ");
 
-            try
-            {
-                array = AddRows(array, k, mode == 2);
+            if(mode == 1 || mode == 2)
+                correctInput = true;
 
-                Console.WriteLine("\nРваный массив после добавления строк:");
-                ArrayIO.PrintArray(array);
-                correctAnswer = true;
-            }
-            catch (ArgumentOutOfRangeException ex)
+            if (correctInput)
             {
-                Console.WriteLine($"Ошибка: {ex.Message}");
+                try
+                {
+                    array = AddRows(array, k, mode == 2);
+
+                    Console.WriteLine("\nРваный массив после добавления строк:");
+                    ArrayIO.PrintArray(array);
+                    correctAnswer = true;
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Нет такого пункта меню.");
             }
         }
     }
@@ -160,7 +171,7 @@ public class Program
         while (!validChoice)
         {
             int choice = ReadString.ReadValue<int>("Выбор: ");
-            
+
             switch (choice)
             {
                 case 1:
@@ -233,12 +244,13 @@ public class Program
         Console.WriteLine("1. Ввести строку с клавиатуры");
         Console.WriteLine("2. Использовать тестовую строку");
 
-        int choice = ReadString.ReadValue<int>("Выбор: ");
 
         string input = "";
 
         while (input == "")
         {
+            int choice = ReadString.ReadValue<int>("Выбор: ");
+
             switch (choice)
             {
                 case 1:
