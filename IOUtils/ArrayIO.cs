@@ -104,6 +104,12 @@ namespace IOUtils
 
         public static void PrintArray<T>(T[,] array)
         {
+            if(array.GetLength(0) == 0 || array.GetLength(1) == 0)
+            {
+                Console.WriteLine("Массив пуст.");
+                return;
+            }
+
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
@@ -163,14 +169,31 @@ namespace IOUtils
 
         public static void PrintArray<T>(T[][] array)
         {
+            if(array.Length == 0)
+            {
+                Console.WriteLine("Массив пуст.");
+                return;
+            }
+
+            bool isEmpty = true;
             for (int i = 0; i < array.Length; i++)
             {
+                if(array[i].Length != 0)
+                {
+                    isEmpty = false;
+                }
+                
                 for (int j = 0; j < array[i].Length; j++)
                 {
                     Console.Write(array[i][j] + "\t");
                 }
 
                 Console.WriteLine();
+            }
+
+            if (isEmpty)
+            {
+                Console.WriteLine("Массив пуст.");
             }
         }
     }
