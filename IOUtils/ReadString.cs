@@ -5,6 +5,25 @@ namespace IOUtils
 {
     public static class ReadString
     {
+        public static string ReadStringValue(string message, string errorMessage = "")
+        {
+            Console.Write(message);
+            string value;
+
+            do
+            {
+                value = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(value))
+                {
+                    Console.WriteLine("Некорректный ввод! " + errorMessage);
+                }
+            }while(string.IsNullOrEmpty(value));
+
+            Console.WriteLine();
+            return value;
+        }
+        
         public static T ReadValue<T>(string message, string errorMessage = "") where T:INumber<T>
         {
             Console.Write(message);
