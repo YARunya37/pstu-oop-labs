@@ -24,7 +24,7 @@ namespace IOUtils
             return value;
         }
         
-        public static T ReadValue<T>(string message, string errorMessage = "") where T:INumber<T>
+        public static T ReadNumberValue<T>(string message, string errorMessage = "") where T:INumber<T>
         {
             Console.Write(message);
             bool isParsed = false;
@@ -44,7 +44,7 @@ namespace IOUtils
         }
 
 
-        public static T ReadPositiveValue<T>(string message, string errorMessage = "") where T : INumber<T>
+        public static T ReadPositiveNumber<T>(string message, string errorMessage = "") where T : INumber<T>
         {
             Console.Write(message);
             bool isValid = false;
@@ -73,7 +73,7 @@ namespace IOUtils
         }
 
         // Считывает ряд чисел разделенных пробелами. Возвращает массив чисел, указанного типа
-        public static T[] ReadSequence<T>(string message = "") where T : INumber<T>
+        public static T[] ReadNumberSequence<T>(string message = "") where T : INumber<T>
         {
             // Если переданно сообщение, то выводим его
             if(message != "")

@@ -8,7 +8,7 @@ namespace IOUtils
         // ОДНОМЕРНЫЙ МАССИВ
         // =========================
 
-        public static void FillArrayWithRandom<T>(T[] array)
+        public static void FillArrayWithRandomNums<T>(T[] array)
     where T : INumber<T>
         {
             Random random = new Random();
@@ -19,14 +19,14 @@ namespace IOUtils
             }
         }
 
-        public static void FillArrayWithInput<T>(T[] array)
+        public static void FillArrayWithNumbersInput<T>(T[] array)
             where T : INumber<T>
         {
             T[] sequence;
 
             do
             {
-                sequence = ReadString.ReadSequence<T>($"Введите {array.Length} элементов массива через пробел:");
+                sequence = ReadString.ReadNumberSequence<T>($"Введите {array.Length} элементов массива через пробел:");
 
                 if (sequence.Length != array.Length)
                 {
@@ -61,7 +61,7 @@ namespace IOUtils
         // ДВУМЕРНЫЙ МАССИВ
         // =========================
 
-        public static void FillArrayWithRandom<T>(T[,] array)
+        public static void FillArrayWithRandomNums<T>(T[,] array)
             where T : INumber<T>
         {
             Random random = new Random();
@@ -75,7 +75,7 @@ namespace IOUtils
             }
         }
 
-        public static void FillArrayWithInput<T>(T[,] array)
+        public static void FillArrayWithNumbersInput<T>(T[,] array)
             where T : INumber<T>
         {
             for (int i = 0; i < array.GetLength(0); i++)
@@ -84,7 +84,7 @@ namespace IOUtils
 
                 do
                 {
-                    sequence = ReadString.ReadSequence<T>();
+                    sequence = ReadString.ReadNumberSequence<T>();
 
                     if (sequence.Length != array.GetLength(1))
                     {
@@ -126,14 +126,14 @@ namespace IOUtils
         // РВАНЫЙ МАССИВ
         // =========================
 
-        public static void FillArrayWithRandom<T>(T[][] array)
+        public static void FillArrayWithRandomNums<T>(T[][] array)
             where T : INumber<T>
         {
             Random random = new Random();
 
             for (int i = 0; i < array.Length; i++)
             {
-                int size = ReadString.ReadPositiveValue<int>(
+                int size = ReadString.ReadPositiveNumber<int>(
                     "Введите количество элементов в строке " +
                     (i + 1) + ": ");
 
@@ -146,7 +146,7 @@ namespace IOUtils
             }
         }
 
-        public static void FillArrayWithInput<T>(T[][] array)
+        public static void FillArrayWithNumbersInput<T>(T[][] array)
             where T : INumber<T>
         {
             for (int i = 0; i < array.Length; i++)
@@ -156,7 +156,7 @@ namespace IOUtils
                 Console.WriteLine(
                     "Введите элементы строки " + (i + 1) + ":");
 
-                sequence = ReadString.ReadSequence<T>();
+                sequence = ReadString.ReadNumberSequence<T>();
 
                 array[i] = new T[sequence.Length];
 
