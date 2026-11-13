@@ -1,4 +1,4 @@
-﻿namespace Polity.Tests;
+﻿namespace Polities.Tests;
 
 public class UnitTest1
 {
