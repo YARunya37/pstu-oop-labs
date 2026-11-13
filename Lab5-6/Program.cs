@@ -13,7 +13,7 @@ public class Program
 
         while (!isValid)
         {
-            value = ReadString.ReadValue<int>(message);
+            value = ReadString.ReadNumberValue<int>(message);
 
             if (availableValues.Contains(value))
                 isValid = true;
@@ -30,9 +30,9 @@ public class Program
 
     private static void HandleMatrix()
     {
-        int rows = ReadString.ReadPositiveValue<int>("Количество строк: ");
+        int rows = ReadString.ReadPositiveNumber<int>("Количество строк: ");
 
-        int columns = ReadString.ReadPositiveValue<int>("Количество столбцов: ");
+        int columns = ReadString.ReadPositiveNumber<int>("Количество столбцов: ");
 
         int[,] matrix = new int[rows, columns];
 
@@ -45,7 +45,7 @@ public class Program
 
         while (!correctAnswer)
         {
-            int k = ReadString.ReadValue<int>("Номер столбца для удаления (нумерация с 1): ");
+            int k = ReadString.ReadNumberValue<int>("Номер столбца для удаления (нумерация с 1): ");
 
             try
             {
@@ -73,10 +73,10 @@ public class Program
         switch (choice)
         {
             case 1:
-                ArrayIO.FillArrayWithInput(matrix);
+                ArrayIO.FillArrayWithNumbersInput(matrix);
                 break;
             case 2:
-                ArrayIO.FillArrayWithRandom(matrix);
+                ArrayIO.FillArrayWithRandomNums(matrix);
                 break;
         }
     }
@@ -121,7 +121,7 @@ public class Program
 
     private static void HandleJaggedArray()
     {
-        int rows = ReadString.ReadPositiveValue<int>("Количество исходных строк: ");
+        int rows = ReadString.ReadPositiveNumber<int>("Количество исходных строк: ");
 
         int[][] array = new int[rows][];
 
@@ -130,7 +130,7 @@ public class Program
         Console.WriteLine("\nИсходный рваный массив:");
         ArrayIO.PrintArray(array);
 
-        int k = ReadString.ReadPositiveValue<int>("Количество строк для добавления: ");
+        int k = ReadString.ReadPositiveNumber<int>("Количество строк для добавления: ");
 
 
         Console.WriteLine("1. Ввод новых строк вручную");
@@ -168,10 +168,10 @@ public class Program
         switch (choice)
         {
             case 1:
-                ArrayIO.FillArrayWithInput(array);
+                ArrayIO.FillArrayWithNumbersInput(array);
                 break;
             case 2:
-                ArrayIO.FillArrayWithRandom(array);
+                ArrayIO.FillArrayWithRandomNums(array);
                 break;
         }
     }
@@ -200,18 +200,18 @@ public class Program
         // Добавляем новые строки
         for (int i = array.Length; i < result.Length; i++)
         {
-            int size = ReadString.ReadPositiveValue<int>($"Количество элементов в новой строке {i + 1}: ");
+            int size = ReadString.ReadPositiveNumber<int>($"Количество элементов в новой строке {i + 1}: ");
 
             result[i] = new T[size];
 
             // Заполнение массива в строке
             if (randomFill)
             {
-                ArrayIO.FillArrayWithRandom<T>(result[i]);
+                ArrayIO.FillArrayWithRandomNums<T>(result[i]);
             }
             else
             {
-                ArrayIO.FillArrayWithInput<T>(result[i]);
+                ArrayIO.FillArrayWithNumbersInput<T>(result[i]);
             }
         }
 
