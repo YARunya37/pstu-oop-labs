@@ -72,7 +72,7 @@ public class PolityTests
 
         try
         {
-            Polity polity = new Polity(null);
+            Polity polity = new Polity(null!);
         }
         catch (ArgumentNullException e)
         {
@@ -95,7 +95,7 @@ public class PolityTests
         ArgumentException? caught = null;
         try
         {
-            polity.Name = name;
+            polity.Name = name!;
         }
         catch (ArgumentException e)
         {
@@ -117,7 +117,7 @@ public class PolityTests
         ArgumentException? caught = null;
         try
         {
-            polity.Capital = capital;
+            polity.Capital = capital!;
         }
         catch (ArgumentException e)
         {
