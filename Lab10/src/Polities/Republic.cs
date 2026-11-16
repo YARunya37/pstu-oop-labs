@@ -100,10 +100,16 @@ public class Republic : Polity
         return President;
     }
 
+    // Доменный метод: тип республики
+    public override string GetGovernmentType()
+    {
+        return IsPresidential ? "президентская республика" : "парламентская республика";
+    }
+
     public bool IsParliamentNamed(string name)
     {
         return string.Equals(ParliamentName, name?.Trim(), StringComparison.OrdinalIgnoreCase);
-    } 
+    }
 
     // ИНИЦИАЛИЗАЦИЯ
 
@@ -139,6 +145,24 @@ public class Republic : Polity
     }
 
     // ВЫВОД
+
+    // Hiding: new — скрывает Polity.ShowRegularInfo()
+    public new void ShowRegularInfo()
+    {
+        base.ShowRegularInfo();   // явно вызываем скрытую базовую версию
+        Console.WriteLine(
+            $"[Regular] Республика ({GetGovernmentType()}). Президент: {President}, " +
+            $"срок: {PresidentTermYears}, парламент: {ParliamentName}");
+    }
+
+    // Override: динамическое связывание
+    public override void ShowVirtualInfo()
+    {
+        base.ShowVirtualInfo();   // цепочка к Monarchy → Polity (для Kingdom)
+        Console.WriteLine(
+            $"[Virtual] Республика ({GetGovernmentType()}). Президент: {President}, " +
+            $"срок: {PresidentTermYears}, парламент: {ParliamentName}");
+    }
 
     protected override string ToStringExtra()
     {

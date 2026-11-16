@@ -100,6 +100,10 @@ public class Monarchy : Polity
     {
         return Monarch;
     }
+    public override string GetGovernmentType()
+    {
+        return IsHereditary ? "наследственная монархия" : "выборная монархия";
+    }
 
     // Полный титул: "Король Александр (Романовы)"
     public string GetFullTitle()
@@ -138,6 +142,25 @@ public class Monarchy : Polity
     }
 
     // ВЫВОД
+
+
+    // Hiding
+    public new void ShowRegularInfo()
+    {
+        base.ShowRegularInfo();   // Polity.ShowRegularInfo
+        Console.WriteLine(
+            $"[Regular] Монархия ({GetGovernmentType()}). {Title}: {Monarch}, " +
+            $"династия: {Dynasty}");
+    }
+
+    // Override
+    public override void ShowVirtualInfo()
+    {
+        base.ShowVirtualInfo();   // Polity.ShowVirtualInfo
+        Console.WriteLine(
+            $"[Virtual] Монархия ({GetGovernmentType()}). {Title}: {Monarch}, " +
+            $"династия: {Dynasty}");
+    }
 
     protected override string ToStringExtra()
     {

@@ -118,6 +118,11 @@ public class Polity
 
     public virtual string GetHeadOfState() => "Без системы правления нет главы государства";
 
+    public virtual string GetGovernmentType()
+    {
+        return "Без системы правления";
+    }
+
     // ИНИЦИАЛИЗАЦИЯ
 
     // ДСЧ
@@ -179,9 +184,27 @@ public class Polity
         Console.WriteLine($"{ToString()}");
     }
 
+    // ДЕМОНСТРАЦИЯ ВЫВОДА ПО ЗАДАНИЮ
+
+    // Обычная функция. В наследниках скрывается через new.
+    public void ShowRegularInfo()
+    {
+        Console.WriteLine(
+            $"[Regular] Государство: {Name}, Столица: {Capital}, " +
+            $"Население: {Population:N0}, Площадь: {Area:N2}");
+    }
+
+    // Виртуальная функция. В наследниках переопределяется через override.
+    public virtual void ShowVirtualInfo()
+    {
+        Console.WriteLine(
+            $"[Virtual] Государство: {Name}, Столица: {Capital}, " +
+            $"Население: {Population:N0}, Площадь: {Area:N2}");
+    }
+
     // Методы object.
 
-    
+
     // При переопределении вызывать base.*Extra()
     public sealed override string ToString()
     {
@@ -203,7 +226,7 @@ public class Polity
     // override object.Equals
 
     // При переопределении EqualsExtra вызывать base.EqualsExtra() и переопределять GetHashCodeExtra (и наоборот)
-    
+
     public sealed override bool Equals(object? obj)
     {
         // Если в классе в будущем будет перегружен оператор ==, запись this == obj может привести к бесконечной рекурсии

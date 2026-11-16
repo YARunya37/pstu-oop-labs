@@ -136,6 +136,24 @@ public class Kingdom : Monarchy
 
     // ВЫВОД
 
+    // Hiding: цепочка Kingdom => Monarchy => Polity
+    public new void ShowRegularInfo()
+    {
+        base.ShowRegularInfo();   // Monarchy.ShowRegularInfo (new), а он вызывает Polity
+        Console.WriteLine(
+            $"[Regular] Королевство. Резиденция: {RoyalResidence}, " +
+            $"герцогств: {DuchiesCount}, регалии: {CrownJewelsValue:N2}");
+    }
+
+    // Override: цепочка Kingdom => Monarchy => Polity
+    public override void ShowVirtualInfo()
+    {
+        base.ShowVirtualInfo();   // Monarchy.ShowVirtualInfo (override), а он вызывает Polity
+        Console.WriteLine(
+            $"[Virtual] Королевство. Резиденция: {RoyalResidence}, " +
+            $"герцогств: {DuchiesCount}, регалии: {CrownJewelsValue:N2}");
+    }
+
     protected override string ToStringExtra()
     {
         string kingdomInfo =
