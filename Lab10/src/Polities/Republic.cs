@@ -12,7 +12,7 @@ public class Republic : Polity
         set
         {
             if (!string.IsNullOrWhiteSpace(value))
-                field = value;
+                field = value.Trim();
             else
                 throw new ArgumentException("Имя президента не может быть пустым.");
         }
@@ -36,7 +36,7 @@ public class Republic : Polity
         set
         {
             if (!string.IsNullOrWhiteSpace(value))
-                field = value;
+                field = value.Trim();
             else
                 throw new ArgumentException("Название парламента не может быть пустым.");
         }
