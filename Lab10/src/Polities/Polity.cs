@@ -115,6 +115,9 @@ public class Polity
         Area = other.Area;
     }
 
+
+    public virtual string GetHeadOfState() => "Без системы правления нет главы государства";
+
     // ИНИЦИАЛИЗАЦИЯ
 
     // ДСЧ
