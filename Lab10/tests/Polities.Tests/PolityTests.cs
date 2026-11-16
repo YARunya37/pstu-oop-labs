@@ -236,6 +236,23 @@ public class PolityTests
 
         Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }
+
+    [Fact]
+    public void RandomInit_SetsValidInvariants()
+    {
+        Polity polity = new Polity();
+        polity.RandomInit();
+
+        // Строковые поля — непустые и не дефолтные
+        Assert.False(string.IsNullOrWhiteSpace(polity.Name));
+        Assert.NotEqual("Не задано", polity.Name);
+        Assert.False(string.IsNullOrWhiteSpace(polity.Capital));
+        Assert.NotEqual("Не задано", polity.Capital);
+
+        // Числовые поля — в допустимых пределах (сеттеры бы отвергли невалид)
+        Assert.True(polity.Population > 0);
+        Assert.True(double.IsFinite(polity.Area) && polity.Area > 0);
+    }
 }
 
 internal class TestDerivedPolity : Polity
