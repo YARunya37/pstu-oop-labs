@@ -1,9 +1,9 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Polity/Polity.csproj" />
+    <Project Path="src/Polities/Polity.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Polity.Tests/Polity.Tests.csproj" />
+    <Project Path="tests/Polities.Tests/Polity.Tests.csproj" />
   </Folder>
   <Project Path="../IOUtils/IOUtils.csproj" />
 </Solution>
