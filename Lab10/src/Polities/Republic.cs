@@ -94,6 +94,17 @@ public class Republic : Polity
         IsPresidential = other.IsPresidential;
     }
 
+    // МЕТОДЫ ДЛЯ ЗАПРОСОВ
+    public override string GetHeadOfState()
+    {
+        return President;
+    }
+
+    public bool IsParliamentNamed(string name)
+    {
+        return string.Equals(ParliamentName, name?.Trim(), StringComparison.OrdinalIgnoreCase);
+    } 
+
     // ИНИЦИАЛИЗАЦИЯ
 
     protected override void InitExtra()
