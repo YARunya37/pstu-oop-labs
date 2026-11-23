@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Polities\Polity.csproj" />
     <ProjectReference Include="..\..\..\IOUtils\IOUtils.csproj" />
+    <ProjectReference Include="..\InitLib\InitLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
