@@ -1,8 +1,9 @@
 ﻿using IOUtils;
+using Polity;
 
 namespace Polities;
 
-public class Polity
+public class Polity : IInit
 {
     public string Name
     {
