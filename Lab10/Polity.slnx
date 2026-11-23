@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/InitLib/InitLib.csproj" />
     <Project Path="src/Polities/Polity.csproj" />
     <Project Path="src/Program/Program.csproj" />
   </Folder>
