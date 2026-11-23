@@ -3,7 +3,7 @@ using Polity;
 
 namespace Polities;
 
-public class Polity : IInit
+public class Polity : IInit, IComparable
 {
     public string Name
     {
@@ -201,6 +201,21 @@ public class Polity : IInit
         Console.WriteLine(
             $"[Virtual] Государство: {Name}, Столица: {Capital}, " +
             $"Население: {Population:N0}, Площадь: {Area:N2}");
+    }
+
+    // ICOMPARABLE
+
+    public int CompareTo(object? obj)
+    {
+        // Любой объект больше null
+        if(obj == null)
+            return 1;
+
+        // Если не Polity, то не можем сравнить
+        if(obj is not Polity other)
+            throw new ArgumentException();
+
+        return Name.CompareTo(other.Name);
     }
 
     // Методы object.
