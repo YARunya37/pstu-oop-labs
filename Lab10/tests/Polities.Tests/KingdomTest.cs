@@ -20,6 +20,10 @@ public class KingdomTests
         Assert.Equal("Не задано", kingdom.RoyalResidence);
         Assert.Equal(1u, kingdom.DuchiesCount);
         Assert.Equal(1.0, kingdom.CrownJewelsValue);
+
+        Assert.NotNull(kingdom.Currency);
+        Assert.Equal("Не задано", kingdom.Currency.Name);
+        Assert.Equal("?", kingdom.Currency.Symbol);
     }
 
     [Fact]
@@ -31,6 +35,7 @@ public class KingdomTests
         Assert.Equal("Не задано", kingdom.Monarch);
         Assert.Equal("Не задано", kingdom.RoyalResidence);
         Assert.Equal(1u, kingdom.DuchiesCount);
+        Assert.NotNull(kingdom.Currency);
     }
 
     [Fact]
@@ -45,6 +50,7 @@ public class KingdomTests
         Assert.True(kingdom.IsHereditary);
         Assert.Equal("Не задано", kingdom.RoyalResidence);
         Assert.Equal(1u, kingdom.DuchiesCount);
+        Assert.NotNull(kingdom.Currency);
     }
 
     [Fact]
@@ -65,6 +71,9 @@ public class KingdomTests
         Assert.Equal("Вестминстер", kingdom.RoyalResidence);
         Assert.Equal(5u, kingdom.DuchiesCount);
         Assert.Equal(1000.0, kingdom.CrownJewelsValue);
+
+        Assert.NotNull(kingdom.Currency);
+        Assert.Equal("Не задано", kingdom.Currency.Name);
     }
 
     [Theory]
@@ -103,7 +112,10 @@ public class KingdomTests
     {
         Kingdom other = new Kingdom("Страна", "Столица", 100u, 100.0,
             "Александр", "Король", "Романовы", true,
-            "Вестминстер", 5u, 1000.0);
+            "Вестминстер", 5u, 1000.0)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
 
         Kingdom copy = new Kingdom(other);
 
@@ -115,6 +127,10 @@ public class KingdomTests
         Assert.Equal("Вестминстер", copy.RoyalResidence);
         Assert.Equal(5u, copy.DuchiesCount);
         Assert.Equal(1000.0, copy.CrownJewelsValue);
+
+        Assert.NotNull(copy.Currency);
+        Assert.NotSame(other.Currency, copy.Currency);
+        Assert.Equal("Фунт", copy.Currency.Name);
     }
 
     [Fact]
@@ -219,7 +235,6 @@ public class KingdomTests
             "Александр", "Король", "Романовы", true,
             "Вестминстер", 5u, 1000.0);
 
-        // Kingdom не переопределяет GetHeadOfState — наследует Monarchy
         Assert.Equal("Александр", kingdom.GetHeadOfState());
     }
 
@@ -252,7 +267,7 @@ public class KingdomTests
 
     [Theory]
     [InlineData(500.0, true)]
-    [InlineData(1000.0, false)]   // строго больше
+    [InlineData(1000.0, false)]
     [InlineData(1500.0, false)]
     public void IsWealthierThan_VariousThresholds_ReturnsExpected(double threshold, bool expected)
     {
@@ -263,16 +278,32 @@ public class KingdomTests
         Assert.Equal(expected, kingdom.IsWealthierThan(threshold));
     }
 
-    // EQUALS (через EqualsExtra) — КРИТИЧНЫЕ ТЕСТЫ НА base.EqualsExtra
+    // EQUALS
 
-    // ЕСЛИ Kingdom.EqualsExtra ЗАБЫЛ ВЫЗВАТЬ base.EqualsExtra(other),
-    // ЭТОТ ТЕСТ УПАДЁТ: все Kingdom-поля совпадают, а Monarch разный —
-    // без base-вызова Equals вернёт true, что неверно.
+    [Fact]
+    public void Equals_DifferentCurrency_ReturnsFalse()
+    {
+        Kingdom a = new Kingdom("Страна", "Столица", 100u, 100.0,
+            "Александр", "Король", "Романовы", true,
+            "Вестминстер", 5u, 1000.0)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
+        Kingdom b = new Kingdom("Страна", "Столица", 100u, 100.0,
+            "Александр", "Король", "Романовы", true,
+            "Вестминстер", 5u, 1000.0)
+        {
+            Currency = new Currency("Евро", "€")
+        };
+
+        Assert.False(a.Equals(b));
+    }
+
     [Theory]
-    [InlineData("Николай", "Король", "Романовы", true)]       // другой Monarch
-    [InlineData("Александр", "Император", "Романовы", true)]  // другой Title
-    [InlineData("Александр", "Король", "Тюдоры", true)]       // другая Dynasty
-    [InlineData("Александр", "Король", "Романовы", false)]    // другой IsHereditary
+    [InlineData("Николай", "Король", "Романовы", true)]
+    [InlineData("Александр", "Император", "Романовы", true)]
+    [InlineData("Александр", "Король", "Тюдоры", true)]
+    [InlineData("Александр", "Король", "Романовы", false)]
     public void Equals_DifferentMonarchyField_ReturnsFalse(
         string monarch, string title, string dynasty, bool isHereditary)
     {
@@ -287,9 +318,9 @@ public class KingdomTests
     }
 
     [Theory]
-    [InlineData("Версаль", 5u, 1000.0)]     // другая RoyalResidence
-    [InlineData("Вестминстер", 10u, 1000.0)] // другой DuchiesCount
-    [InlineData("Вестминстер", 5u, 2000.0)]  // другая CrownJewelsValue
+    [InlineData("Версаль", 5u, 1000.0)]
+    [InlineData("Вестминстер", 10u, 1000.0)]
+    [InlineData("Вестминстер", 5u, 2000.0)]
     public void Equals_DifferentKingdomField_ReturnsFalse(
         string residence, uint duchies, double crownJewels)
     {
@@ -375,7 +406,7 @@ public class KingdomTests
         Assert.False(kingdom.Equals(null));
     }
 
-    // GETHASHCODE (через GetHashCodeExtra)
+    // GETHASHCODE
 
     [Fact]
     public void GetHashCode_EqualKingdoms_SameHash()
@@ -390,32 +421,34 @@ public class KingdomTests
         Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }
 
-    // TOSTRING (через ToStringExtra) — проверяет цепочку base.ToStringExtra
+    // TOSTRING
 
     [Fact]
     public void ToString_ContainsBothMonarchyAndKingdomFields()
     {
         Kingdom kingdom = new Kingdom("Страна", "Столица", 100u, 100.0,
             "Александр", "Король", "Романовы", true,
-            "Вестминстер", 5u, 1000.0);
+            "Вестминстер", 5u, 1000.0)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
 
         string result = kingdom.ToString();
 
-        // Из Polity
         Assert.Contains("Страна", result);
         Assert.Contains("Столица", result);
-        // Из Monarchy (через base.ToStringExtra)
         Assert.Contains("Монархия", result);
         Assert.Contains("Александр", result);
         Assert.Contains("Король", result);
         Assert.Contains("Романовы", result);
-        // Из Kingdom
         Assert.Contains("Вестминстер", result);
         Assert.Contains("5", result);
         Assert.Contains("герцогств", result);
+        Assert.Contains("Фунт", result);
+        Assert.Contains("£", result);
     }
 
-    // RANDOMINIT (через RandomInitExtra) — проверяет цепочку base.RandomInitExtra
+    // RANDOMINIT
 
     [Fact]
     public void RandomInit_SetsAllInvariants_IncludingInherited()
@@ -423,13 +456,11 @@ public class KingdomTests
         Kingdom kingdom = new Kingdom();
         kingdom.RandomInit();
 
-        // Из Polity
         Assert.False(string.IsNullOrWhiteSpace(kingdom.Name));
         Assert.NotEqual("Не задано", kingdom.Name);
         Assert.True(kingdom.Population > 0);
         Assert.True(double.IsFinite(kingdom.Area) && kingdom.Area > 0);
 
-        // Из Monarchy (через base.RandomInitExtra) — если забыли base, останутся "Не задано"
         Assert.False(string.IsNullOrWhiteSpace(kingdom.Monarch));
         Assert.NotEqual("Не задано", kingdom.Monarch);
         Assert.False(string.IsNullOrWhiteSpace(kingdom.Title));
@@ -437,10 +468,12 @@ public class KingdomTests
         Assert.False(string.IsNullOrWhiteSpace(kingdom.Dynasty));
         Assert.NotEqual("Не задано", kingdom.Dynasty);
 
-        // Из Kingdom
         Assert.False(string.IsNullOrWhiteSpace(kingdom.RoyalResidence));
         Assert.NotEqual("Не задано", kingdom.RoyalResidence);
         Assert.True(kingdom.DuchiesCount > 0);
         Assert.True(double.IsFinite(kingdom.CrownJewelsValue) && kingdom.CrownJewelsValue > 0);
+
+        Assert.NotNull(kingdom.Currency);
+        Assert.NotEqual("Не задано", kingdom.Currency.Name);
     }
 }

@@ -2,8 +2,6 @@
 
 public class PolityTests
 {
-    // Метод_Сценарий_ОжидаемоеДействие(глагол)
-
     // КОНСТРУКТОРЫ
 
     [Fact]
@@ -12,12 +10,13 @@ public class PolityTests
         Polity polity = new Polity();
 
         Assert.Equal("Не задано", polity.Name);
-
         Assert.Equal("Не задано", polity.Capital);
-
         Assert.Equal(1u, polity.Population);
-
         Assert.Equal(1.0, polity.Area);
+
+        Assert.NotNull(polity.Currency);
+        Assert.Equal("Не задано", polity.Currency.Name);
+        Assert.Equal("?", polity.Currency.Symbol);
     }
 
     [Fact]
@@ -29,6 +28,10 @@ public class PolityTests
         Assert.Equal("Столица", polity.Capital);
         Assert.Equal(10000u, polity.Population);
         Assert.Equal(1000000.0, polity.Area);
+
+        // Currency не передаётся в конструктор с параметрами — должен быть дефолтным
+        Assert.NotNull(polity.Currency);
+        Assert.Equal("Не задано", polity.Currency.Name);
     }
 
     [Theory]
@@ -37,7 +40,7 @@ public class PolityTests
     [InlineData("Страна", "Столица", 0u, 100.0)]
     [InlineData("Страна", "Столица", 100u, 0.0)]
     public void Constructor_InvalidArgument_ThrowsArgumentException(
-    string name, string capital, uint population, double area)
+        string name, string capital, uint population, double area)
     {
         ArgumentException? caught = null;
         try
@@ -55,7 +58,10 @@ public class PolityTests
     [Fact]
     public void CopyConstructor_ValidOther_CopiesValue()
     {
-        Polity other = new Polity("Страна", "Столица", 10000u, 1000000.0);
+        Polity other = new Polity("Страна", "Столица", 10000u, 1000000.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
 
         Polity copy = new Polity(other);
 
@@ -170,7 +176,94 @@ public class PolityTests
         Assert.Equal("Площадь должна быть конечным положительным числом", caught.Message);
     }
 
-    // EQUALS и GETHASHCODE
+    // ВАЛЮТА (поле Currency)
+
+    [Fact]
+    public void CopyConstructor_ValidOther_CreatesIndependentCurrency()
+    {
+        Polity other = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+
+        Polity copy = new Polity(other);
+
+        // Разные экземпляры Currency (deep copy, не shared reference)
+        Assert.NotNull(copy.Currency);
+        Assert.NotSame(other.Currency, copy.Currency);
+        // Но значения равны
+        Assert.Equal("Доллар", copy.Currency.Name);
+        Assert.Equal("$", copy.Currency.Symbol);
+
+        // Независимость: изменение в копии не затрагивает оригинал
+        copy.Currency.Name = "Изменено";
+        Assert.Equal("Доллар", other.Currency.Name);
+    }
+
+    [Fact]
+    public void Equals_EqualCurrencyDifferentInstances_ReturnsTrue()
+    {
+        Polity a = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+        Polity b = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+
+        // Разные экземпляры Currency
+        Assert.NotSame(a.Currency, b.Currency);
+        // Но Polity равны (сравнение по значениям Currency, не по ссылке)
+        Assert.True(a.Equals(b));
+    }
+
+    [Theory]
+    [InlineData("Другое", "$")]   // отличается Name
+    [InlineData("Доллар", "€")]   // отличается Symbol
+    public void Equals_DifferentCurrency_ReturnsFalse(string currencyName, string currencySymbol)
+    {
+        Polity a = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+        Polity b = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency(currencyName, currencySymbol)
+        };
+
+        Assert.False(a.Equals(b));
+    }
+
+    [Fact]
+    public void ToString_ContainsCurrency()
+    {
+        Polity polity = new Polity("Страна", "Столица", 100u, 100.0)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+
+        string result = polity.ToString();
+
+        Assert.Contains("Валюта", result);
+        Assert.Contains("Доллар", result);
+        Assert.Contains("$", result);
+    }
+
+    [Fact]
+    public void RandomInit_SetsValidCurrency()
+    {
+        Polity polity = new Polity();
+        polity.RandomInit();
+
+        Assert.NotNull(polity.Currency);
+        Assert.False(string.IsNullOrWhiteSpace(polity.Currency.Name));
+        Assert.NotEqual("Не задано", polity.Currency.Name);
+        Assert.False(string.IsNullOrWhiteSpace(polity.Currency.Symbol));
+    }
+
+    // EQUALS и GETHASHCODE (общие)
+
     [Fact]
     public void Equals_SameObject_ReturnsTrue()
     {
@@ -227,7 +320,6 @@ public class PolityTests
         Assert.False(polity.Equals(null));
     }
 
-    // Равные объекты должны получать одинаковый хеш
     [Fact]
     public void GetHashCode_EqualObjects_SameHash()
     {
@@ -243,13 +335,10 @@ public class PolityTests
         Polity polity = new Polity();
         polity.RandomInit();
 
-        // Строковые поля — непустые и не дефолтные
         Assert.False(string.IsNullOrWhiteSpace(polity.Name));
         Assert.NotEqual("Не задано", polity.Name);
         Assert.False(string.IsNullOrWhiteSpace(polity.Capital));
         Assert.NotEqual("Не задано", polity.Capital);
-
-        // Числовые поля — в допустимых пределах (сеттеры бы отвергли невалид)
         Assert.True(polity.Population > 0);
         Assert.True(double.IsFinite(polity.Area) && polity.Area > 0);
     }
@@ -259,5 +348,5 @@ internal class TestDerivedPolity : Polity
 {
     public TestDerivedPolity() : base() { }
     public TestDerivedPolity(string name, string capital, uint population, double area)
-    : base(name, capital, population, area) { }
+        : base(name, capital, population, area) { }
 }

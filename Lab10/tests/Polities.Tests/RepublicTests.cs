@@ -17,6 +17,10 @@ public class RepublicTests
         Assert.Equal(1, republic.PresidentTermYears);
         Assert.Equal("Не задано", republic.ParliamentName);
         Assert.False(republic.IsPresidential);
+
+        Assert.NotNull(republic.Currency);
+        Assert.Equal("Не задано", republic.Currency.Name);
+        Assert.Equal("?", republic.Currency.Symbol);
     }
 
     [Fact]
@@ -29,6 +33,7 @@ public class RepublicTests
         Assert.Equal(1, republic.PresidentTermYears);
         Assert.Equal("Не задано", republic.ParliamentName);
         Assert.False(republic.IsPresidential);
+        Assert.NotNull(republic.Currency);
     }
 
     [Fact]
@@ -46,16 +51,20 @@ public class RepublicTests
         Assert.Equal(5, republic.PresidentTermYears);
         Assert.Equal("Сенат", republic.ParliamentName);
         Assert.True(republic.IsPresidential);
+
+        // Currency не параметризована — дефолт
+        Assert.NotNull(republic.Currency);
+        Assert.Equal("Не задано", republic.Currency.Name);
     }
 
     [Theory]
-    [InlineData("", "Столица", 100u, 100.0, "Иванов", 5, "Сенат", true)]       // bad name
-    [InlineData("Страна", "", 100u, 100.0, "Иванов", 5, "Сенат", true)]        // bad capital
-    [InlineData("Страна", "Столица", 0u, 100.0, "Иванов", 5, "Сенат", true)]   // bad population
-    [InlineData("Страна", "Столица", 100u, 0.0, "Иванов", 5, "Сенат", true)]   // bad area
-    [InlineData("Страна", "Столица", 100u, 100.0, "", 5, "Сенат", true)]       // bad president
-    [InlineData("Страна", "Столица", 100u, 100.0, "Иванов", 0, "Сенат", true)] // bad term
-    [InlineData("Страна", "Столица", 100u, 100.0, "Иванов", 5, "", true)]      // bad parliament
+    [InlineData("", "Столица", 100u, 100.0, "Иванов", 5, "Сенат", true)]
+    [InlineData("Страна", "", 100u, 100.0, "Иванов", 5, "Сенат", true)]
+    [InlineData("Страна", "Столица", 0u, 100.0, "Иванов", 5, "Сенат", true)]
+    [InlineData("Страна", "Столица", 100u, 0.0, "Иванов", 5, "Сенат", true)]
+    [InlineData("Страна", "Столица", 100u, 100.0, "", 5, "Сенат", true)]
+    [InlineData("Страна", "Столица", 100u, 100.0, "Иванов", 0, "Сенат", true)]
+    [InlineData("Страна", "Столица", 100u, 100.0, "Иванов", 5, "", true)]
     public void Constructor_InvalidArgument_ThrowsArgumentException(
         string name, string capital, uint population, double area,
         string president, int presidentTermYears, string parliamentName, bool isPresidential)
@@ -80,7 +89,10 @@ public class RepublicTests
     {
         Republic other = new Republic(
             "Страна", "Столица", 100u, 100.0,
-            "Иванов", 5, "Сенат", true);
+            "Иванов", 5, "Сенат", true)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
 
         Republic copy = new Republic(other);
 
@@ -92,6 +104,11 @@ public class RepublicTests
         Assert.Equal(5, copy.PresidentTermYears);
         Assert.Equal("Сенат", copy.ParliamentName);
         Assert.True(copy.IsPresidential);
+
+        // Currency deep-copy
+        Assert.NotNull(copy.Currency);
+        Assert.NotSame(other.Currency, copy.Currency);
+        Assert.Equal("Доллар", copy.Currency.Name);
     }
 
     [Fact]
@@ -240,7 +257,7 @@ public class RepublicTests
         Assert.Equal(expected, republic.IsParliamentNamed(query!));
     }
 
-    // EQUALS (через EqualsExtra)
+    // EQUALS
 
     [Fact]
     public void Equals_SameObject_ReturnsTrue()
@@ -261,17 +278,33 @@ public class RepublicTests
         Assert.True(a.Equals(b));
     }
 
+    [Fact]
+    public void Equals_DifferentCurrency_ReturnsFalse()
+    {
+        Republic a = new Republic("Страна", "Столица", 100u, 100.0,
+            "Иванов", 5, "Сенат", true)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
+        Republic b = new Republic("Страна", "Столица", 100u, 100.0,
+            "Иванов", 5, "Сенат", true)
+        {
+            Currency = new Currency("Евро", "€")
+        };
+
+        Assert.False(a.Equals(b));
+    }
+
     [Theory]
-    [InlineData("Другой", 5, "Сенат", true)]      // отличается President
-    [InlineData("Иванов", 4, "Сенат", true)]      // отличается PresidentTermYears
-    [InlineData("Иванов", 5, "Конгресс", true)]   // отличается ParliamentName
-    [InlineData("Иванов", 5, "Сенат", false)]     // отличается IsPresidential
+    [InlineData("Другой", 5, "Сенат", true)]
+    [InlineData("Иванов", 4, "Сенат", true)]
+    [InlineData("Иванов", 5, "Конгресс", true)]
+    [InlineData("Иванов", 5, "Сенат", false)]
     public void Equals_DifferentExtraField_ReturnsFalse(
         string president, int term, string parliament, bool isPresidential)
     {
         Republic original = new Republic("Страна", "Столица", 100u, 100.0,
             "Иванов", 5, "Сенат", true);
-            
         Republic other = new Republic("Страна", "Столица", 100u, 100.0,
             president, term, parliament, isPresidential);
 
@@ -279,10 +312,10 @@ public class RepublicTests
     }
 
     [Theory]
-    [InlineData("Другая", "Столица", 100u, 100.0)]   // отличается Name
-    [InlineData("Страна", "Другая", 100u, 100.0)]    // отличается Capital
-    [InlineData("Страна", "Столица", 200u, 100.0)]   // отличается Population
-    [InlineData("Страна", "Столица", 100u, 200.0)]   // отличается Area
+    [InlineData("Другая", "Столица", 100u, 100.0)]
+    [InlineData("Страна", "Другая", 100u, 100.0)]
+    [InlineData("Страна", "Столица", 200u, 100.0)]
+    [InlineData("Страна", "Столица", 100u, 200.0)]
     public void Equals_DifferentBaseField_ReturnsFalse(
         string name, string capital, uint population, double area)
     {
@@ -321,7 +354,7 @@ public class RepublicTests
         Assert.False(republic.Equals(new object()));
     }
 
-    // GETHASHCODE (через GetHashCodeExtra)
+    // GETHASHCODE
 
     [Fact]
     public void GetHashCode_EqualRepublics_SameHash()
@@ -334,13 +367,16 @@ public class RepublicTests
         Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }
 
-    // TOSTRING (через ToStringExtra)
+    // TOSTRING
 
     [Fact]
     public void ToString_PresidentialRepublic_ContainsAllFields()
     {
         Republic republic = new Republic("Страна", "Столица", 100u, 100.0,
-            "Иванов", 5, "Сенат", true);
+            "Иванов", 5, "Сенат", true)
+        {
+            Currency = new Currency("Доллар", "$")
+        };
 
         string result = republic.ToString();
 
@@ -349,6 +385,8 @@ public class RepublicTests
         Assert.Contains("Сенат", result);
         Assert.Contains("5", result);
         Assert.Contains("президентская", result);
+        Assert.Contains("Доллар", result);
+        Assert.Contains("$", result);
     }
 
     [Fact]
@@ -363,7 +401,7 @@ public class RepublicTests
         Assert.DoesNotContain("президентская", result);
     }
 
-    // RANDOMINIT (через RandomInitExtra)
+    // RANDOMINIT
 
     [Fact]
     public void RandomInit_SetsValidInvariants()
@@ -378,5 +416,8 @@ public class RepublicTests
         Assert.False(string.IsNullOrWhiteSpace(republic.President));
         Assert.InRange(republic.PresidentTermYears, 1, 10);
         Assert.False(string.IsNullOrWhiteSpace(republic.ParliamentName));
+
+        Assert.NotNull(republic.Currency);
+        Assert.NotEqual("Не задано", republic.Currency.Name);
     }
 }

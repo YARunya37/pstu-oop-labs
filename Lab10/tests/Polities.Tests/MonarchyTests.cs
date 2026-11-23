@@ -17,6 +17,10 @@ public class MonarchyTests
         Assert.Equal("Не задано", monarchy.Title);
         Assert.Equal("Не задано", monarchy.Dynasty);
         Assert.False(monarchy.IsHereditary);
+
+        Assert.NotNull(monarchy.Currency);
+        Assert.Equal("Не задано", monarchy.Currency.Name);
+        Assert.Equal("?", monarchy.Currency.Symbol);
     }
 
     [Fact]
@@ -29,6 +33,7 @@ public class MonarchyTests
         Assert.Equal("Не задано", monarchy.Title);
         Assert.Equal("Не задано", monarchy.Dynasty);
         Assert.False(monarchy.IsHereditary);
+        Assert.NotNull(monarchy.Currency);
     }
 
     [Fact]
@@ -46,6 +51,9 @@ public class MonarchyTests
         Assert.Equal("Король", monarchy.Title);
         Assert.Equal("Романовы", monarchy.Dynasty);
         Assert.True(monarchy.IsHereditary);
+
+        Assert.NotNull(monarchy.Currency);
+        Assert.Equal("Не задано", monarchy.Currency.Name);
     }
 
     [Theory]
@@ -80,7 +88,10 @@ public class MonarchyTests
     {
         Monarchy other = new Monarchy(
             "Страна", "Столица", 100u, 100.0,
-            "Александр", "Король", "Романовы", true);
+            "Александр", "Король", "Романовы", true)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
 
         Monarchy copy = new Monarchy(other);
 
@@ -92,6 +103,10 @@ public class MonarchyTests
         Assert.Equal("Король", copy.Title);
         Assert.Equal("Романовы", copy.Dynasty);
         Assert.True(copy.IsHereditary);
+
+        Assert.NotNull(copy.Currency);
+        Assert.NotSame(other.Currency, copy.Currency);
+        Assert.Equal("Фунт", copy.Currency.Name);
     }
 
     [Fact]
@@ -100,7 +115,7 @@ public class MonarchyTests
         ArgumentNullException? caught = null;
         try
         {
-            Monarchy monarchy = new Monarchy((Monarchy)null!);
+            Monarchy monarchy = new Monarchy(null!);
         }
         catch (ArgumentNullException e)
         {
@@ -227,7 +242,7 @@ public class MonarchyTests
         Assert.Equal("Король Александр (Романовы)", monarchy.GetFullTitle());
     }
 
-    // EQUALS (через EqualsExtra)
+    // EQUALS
 
     [Fact]
     public void Equals_SameObject_ReturnsTrue()
@@ -248,11 +263,28 @@ public class MonarchyTests
         Assert.True(a.Equals(b));
     }
 
+    [Fact]
+    public void Equals_DifferentCurrency_ReturnsFalse()
+    {
+        Monarchy a = new Monarchy("Страна", "Столица", 100u, 100.0,
+            "Александр", "Король", "Романовы", true)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
+        Monarchy b = new Monarchy("Страна", "Столица", 100u, 100.0,
+            "Александр", "Король", "Романовы", true)
+        {
+            Currency = new Currency("Евро", "€")
+        };
+
+        Assert.False(a.Equals(b));
+    }
+
     [Theory]
-    [InlineData("Николай", "Король", "Романовы", true)]      // Monarch
-    [InlineData("Александр", "Император", "Романовы", true)] // Title
-    [InlineData("Александр", "Король", "Тюдоры", true)]      // Dynasty
-    [InlineData("Александр", "Король", "Романовы", false)]   // IsHereditary
+    [InlineData("Николай", "Король", "Романовы", true)]
+    [InlineData("Александр", "Император", "Романовы", true)]
+    [InlineData("Александр", "Король", "Тюдоры", true)]
+    [InlineData("Александр", "Король", "Романовы", false)]
     public void Equals_DifferentExtraField_ReturnsFalse(
         string monarch, string title, string dynasty, bool isHereditary)
     {
@@ -319,7 +351,7 @@ public class MonarchyTests
         Assert.False(monarchy.Equals(new object()));
     }
 
-    // GETHASHCODE (через GetHashCodeExtra)
+    // GETHASHCODE
 
     [Fact]
     public void GetHashCode_EqualMonarchies_SameHash()
@@ -332,13 +364,16 @@ public class MonarchyTests
         Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }
 
-    // TOSTRING (через ToStringExtra)
+    // TOSTRING
 
     [Fact]
     public void ToString_HereditaryMonarchy_ContainsAllFields()
     {
         Monarchy monarchy = new Monarchy("Страна", "Столица", 100u, 100.0,
-            "Александр", "Король", "Романовы", true);
+            "Александр", "Король", "Романовы", true)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
 
         string result = monarchy.ToString();
 
@@ -347,6 +382,8 @@ public class MonarchyTests
         Assert.Contains("Король", result);
         Assert.Contains("Романовы", result);
         Assert.Contains("наследственная", result);
+        Assert.Contains("Фунт", result);
+        Assert.Contains("£", result);
     }
 
     [Fact]
@@ -361,7 +398,7 @@ public class MonarchyTests
         Assert.DoesNotContain("наследственная", result);
     }
 
-    // RANDOMINIT (через RandomInitExtra)
+    // RANDOMINIT
 
     [Fact]
     public void RandomInit_SetsValidInvariants()
@@ -375,5 +412,8 @@ public class MonarchyTests
         Assert.False(string.IsNullOrWhiteSpace(monarchy.Monarch));
         Assert.False(string.IsNullOrWhiteSpace(monarchy.Title));
         Assert.False(string.IsNullOrWhiteSpace(monarchy.Dynasty));
+
+        Assert.NotNull(monarchy.Currency);
+        Assert.NotEqual("Не задано", monarchy.Currency.Name);
     }
 }

@@ -68,6 +68,8 @@ public class Polity : IInit, IComparable
         }
     }
 
+    public Currency Currency{ get; set; }
+
     // Общий генератор для базового класса и всех наследников
     protected static readonly Random Rnd = new();
 
@@ -84,6 +86,17 @@ public class Polity : IInit, IComparable
             "Тру-Грестин", "Нова-Град", "Аурум", "Асгард", "Полис"
     ];
 
+    protected static readonly (string Name, string Symbol)[] SampleCurrencies =
+    [
+        ("Доллар", "$"),
+        ("Евро", "€"),
+        ("Рубль", "₽"),
+        ("Фунт", "£"),
+        ("Йена", "¥"),
+        ("Юань", "元"),
+        ("Франк", "₣")
+    ];
+
 
     // КОНСТРУКТОРЫ
 
@@ -93,6 +106,7 @@ public class Polity : IInit, IComparable
         Capital = "Не задано";
         Population = 1;
         Area = 1;
+        Currency = new Currency();
     }
 
     public Polity(string name, string capital, uint population, double area)
@@ -101,6 +115,7 @@ public class Polity : IInit, IComparable
         Capital = capital;
         Population = population;
         Area = area;
+        Currency = new Currency();
     }
 
     public Polity(Polity other)
@@ -108,11 +123,11 @@ public class Polity : IInit, IComparable
         if (other == null)
             throw new ArgumentNullException(nameof(other));
 
-
         Name = other.Name;
         Capital = other.Capital;
         Population = other.Population;
         Area = other.Area;
+        Currency = new Currency(other.Currency);   // ГЛУБОКАЯ копия, не other.Currency
     }
 
 
@@ -141,6 +156,9 @@ public class Polity : IInit, IComparable
         // Площадь от 1 000 до 10 000 000 км² с округлением до 2 знаков
         double rawArea = Rnd.NextDouble() * (10_000_000 - 1_000) + 1_000;
         Area = Math.Round(rawArea, 2);
+
+        var c = SampleCurrencies[Rnd.Next(SampleCurrencies.Length)];
+        Currency = new Currency(c.Name, c.Symbol);
 
         RandomInitExtra();
     }
@@ -172,6 +190,17 @@ public class Polity : IInit, IComparable
     void InitArea()
     {
         Area = ReadString.ReadPositiveNumber<double>("Введите площадь территории государства: ");
+    }
+
+    void InitCurrency()
+    {
+        string currencyName = ReadString.ReadStringValue(
+            "Введите название валюты: ",
+            "Название валюты не может быть пустым.");
+        string currencySymbol = ReadString.ReadStringValue(
+            "Введите символ валюты: ",
+            "Символ валюты не может быть пустым.");
+        Currency = new Currency(currencyName, currencySymbol);
     }
 
     // При переопределении вызывать base.*Extra()
@@ -207,11 +236,11 @@ public class Polity : IInit, IComparable
     public int CompareTo(object? obj)
     {
         // Любой объект больше null
-        if(obj == null)
+        if (obj == null)
             return 1;
 
         // Если не Polity, то не можем сравнить
-        if(obj is not Polity other)
+        if (obj is not Polity other)
             throw new ArgumentException();
 
         return Name.CompareTo(other.Name);
@@ -225,7 +254,9 @@ public class Polity : IInit, IComparable
     {
         // Формат :N0 добавит разделители разрядов для населения (например, 12 500 000), 
         // а :N2 выведет площадь с двумя знаками после запятой.
-        string result = $"Государство: {Name}, Столица: {Capital}, Население: {Population:N0} чел., Площадь: {Area:N2} км²";
+        string result = $"Государство: {Name}, Столица: {Capital}, " +
+                $"Население: {Population:N0} чел., Площадь: {Area:N2} км², " +
+                $"Валюта: {Currency}";
 
         string extra = ToStringExtra();
         if (!string.IsNullOrWhiteSpace(extra))
@@ -260,6 +291,8 @@ public class Polity : IInit, IComparable
             Capital == other.Capital &&
             Population == other.Population &&
             Area == other.Area &&
+            Currency.Name == other.Currency.Name &&
+            Currency.Symbol == other.Currency.Symbol &&
             EqualsExtra(other);
     }
 
@@ -268,7 +301,7 @@ public class Polity : IInit, IComparable
     // override object.GetHashCode
     public sealed override int GetHashCode()
     {
-        return HashCode.Combine(Name, Capital, Population, Area, GetHashCodeExtra());
+        return HashCode.Combine(Name, Capital, Population, Area, Currency.Name, Currency.Symbol, GetHashCodeExtra());
     }
 
     protected virtual int GetHashCodeExtra() => 0;
