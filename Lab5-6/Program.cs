@@ -246,9 +246,7 @@ public class Program
                     inputReceived = input != "";
 
                     if (!inputReceived)
-                    {
                         Console.WriteLine("Была введена пустая строка\n");
-                    }
 
                     break;
 
@@ -273,19 +271,30 @@ public class Program
         if (string.IsNullOrWhiteSpace(text))
             return string.Empty;
 
-        MatchCollection sentences = Regex.Matches(
+        string result = "";
+
+        // Поиск первого предложения
+        Match sentence = Regex.Match(
             text,
-            // Любое количество символов(не .!?), последний символ .?!
-            // ИЛИ любое кол-во символов без знака препинания на конце
-            @"[^.!?]*[.!?]|[^.!?]+$");
+            @"[^.!?]*[.!?]");
 
-        string[] result = sentences
-            .Cast<Match>()
-            .Select(match => ProcessSentence(match.Value))
-            .Where(sentence => !string.IsNullOrWhiteSpace(sentence))
-            .ToArray();
+        while (sentence.Success)
+        {
+            string processed = ProcessSentence(sentence.Value);
 
-        return string.Join(" ", result);
+            if (processed != "")
+            {
+                if (result != "")
+                    result += " ";
+
+                result += processed;
+            }
+
+            // Переход к следующему предложению
+            sentence = sentence.NextMatch();
+        }
+
+        return result;
     }
 
     private static string ProcessSentence(string sentence)
@@ -298,24 +307,51 @@ public class Program
             ? sentence.Substring(0, ending.Index)
             : sentence;
 
-        MatchCollection words = Regex.Matches(
+        // Поиск первого слова. Незахватывающая группа, чтобы корректно обрабатывать сложные слова
+        Match firstWord = Regex.Match(
             body,
-            // [Любые буквы Unicode, любые цифры Unicode] - 1 и более
-            // Незахватывающая группа для сложных слов(через тире)
-            @"[\p{L}\p{N}]+(?:[-'][\p{L}\p{N}]+)*");
+            @"[\p{L}\p{N}]+(?:[-][\p{L}\p{N}]+)*");
 
-        if (words.Count <= 2)
+        if (!firstWord.Success)
             return "";
 
-        int start = words[0].Index + words[0].Length;
-        int end = words[words.Count - 1].Index;
+        // Поиск последнего слова
+        Match lastWord = firstWord;
 
-        // Берём подстроку начиная от второго слова и заканчивая предпоследним
+        int wordCount = 0;
+
+        Match currentWord = firstWord;
+
+        while (currentWord.Success)
+        {
+            wordCount++;
+
+            lastWord = currentWord;
+
+            currentWord = currentWord.NextMatch();
+        }
+
+        if (wordCount <= 2)
+            return "";
+
+        // Начало после первого слова
+        int start = firstWord.Index + firstWord.Length;
+
+        // Конец перед последним словом
+        int end = lastWord.Index;
+
+        // Получение подстроки
         string result = body.Substring(start, end - start).Trim();
 
+        result = Regex.Replace(result, @"^[,;:]+", "").Trim();
+
+        // Удаление лишних пробелов
         result = Regex.Replace(result, @"\s+", " ");
+
+        // Удаление пробелов перед знаками препинания
         result = Regex.Replace(result, @"\s+([,;:])", "$1");
 
+        // Первая буква заглавная
         if (result.Length > 0)
         {
             result = char.ToUpper(result[0]) + result.Substring(1);
