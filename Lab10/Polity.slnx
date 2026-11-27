@@ -7,6 +7,7 @@
   <Folder Name="/src/Polities/" />
   <Folder Name="/tests/">
     <Project Path="tests/Polities.Tests/Polity.Tests.csproj" />
+    <Project Path="tests/Program.Tests/Program.Tests.csproj" />
   </Folder>
   <Project Path="../IOUtils/IOUtils.csproj" />
 </Solution>
