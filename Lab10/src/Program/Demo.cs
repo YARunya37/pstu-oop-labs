@@ -24,9 +24,8 @@ public static class Demo
     // RTTI, запросы
     public static void ShowTask2()
     {
-
-        // Массив из всех типов иерархии
-        Polity[] states = new Polity[100];
+        // Подготовка массива
+        Polity[] states = new Polity[20];
         for (int i = 0; i < states.Length; i++)
         {
             states[i] = (i % 4) switch
@@ -39,40 +38,42 @@ public static class Demo
             states[i].RandomInit();
         }
 
+        // Множества со значениями, которые были сгенерированы
+        // Нужны для запросов с вводом, чтобы можно было вывести допустимые значения
+        HashSet<string> parliaments = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (Polity p in states)
+            if (p is Republic r) parliaments.Add(r.ParliamentName);
 
-        // Запрос 1 — без параметров
-        Console.WriteLine("=== 1. Имена всех глав государств ===");
+        HashSet<string> titles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (Polity p in states)
+            if (p is Monarchy m) titles.Add(m.Title);
+
+        Console.WriteLine("1) Главы государств (виртуальный метод, без RTTI):");
         Queries.PrintHeadsOfState(states);
 
-        // Запрос 2 — без параметров
-        Console.WriteLine("\n=== 2. Количество президентских республик ===");
-        int presCount = Queries.CountPresidentialRepublics(states);
-        Console.WriteLine($"Президентских республик: {presCount}");
+        Console.WriteLine($"\n2) Президентских республик: {Queries.CountPresidentialRepublics(states)}");
+        
+        // Запрос 3 — собрать парламенты, вывести допустимые, ввести
+        Console.WriteLine("\n3) Республики с заданным парламентом.");
+        
+        Console.WriteLine("   Допустимые значения (из массива):");
+        foreach (string name in parliaments)
+            Console.WriteLine($"\t- {name}");
 
-        // Запрос 3 — параметр с клавиатуры (парламент)
-        Console.WriteLine("\n=== 3. Республики с заданным парламентом ===");
-        Console.WriteLine("Допустимые названия парламентов:");
-        Console.WriteLine("Национальное собрание, Конгресс, Сенат, Парламент,");
-        Console.WriteLine("Государственная дума, Народное собрание");
-        string parliament = ReadString.ReadStringValue(
-            "  Введите название парламента: ",
-            "  Название парламента не может быть пустым.");
+        string parliament = ReadString.ReadStringValue("Введите название парламента: ", "Название парламента не может быть пустым.");
         Queries.PrintRepublicsByParliament(states, parliament);
 
-        // Запрос 4 — параметр с клавиатуры (титул)
-        Console.WriteLine("\n=== 4. Монархии с заданным титулом ===");
-        Console.WriteLine("Допустимые титулы:");
-        Console.WriteLine("Король, Император, Султан, Царь, Хан, Шах");
-        string title = ReadString.ReadStringValue(
-            "Введите титул: ",
-            "Титул не может быть пустым.");
+        // Запрос 4 — собрать титулы, вывести допустимые, ввести
+        Console.WriteLine("\n4) Монархии с заданным титулом.");
+        Console.WriteLine("   Допустимые значения (из массива):");
+        foreach (string title in titles)
+            Console.WriteLine($"\t- {title}");
 
-        Queries.PrintMonarchiesByTitle(states, title);
+        string chosenTitle = ReadString.ReadStringValue("Введите титул: ", "Титул не может быть пустым.");
 
-        // Запрос 5 — без параметров
-        Console.WriteLine("\n=== 5. Среднее число герцогств в королевствах ===");
-        double avg = Queries.AverageDuchiesInKingdoms(states);
-        Console.WriteLine($"Среднее число герцогств: {avg:F2}");
+        Queries.PrintMonarchiesByTitle(states, chosenTitle);
+
+        Console.WriteLine($"\n5) Среднее число герцогств в королевствах: {Queries.AverageDuchiesInKingdoms(states):F2}");
     }
 
 
