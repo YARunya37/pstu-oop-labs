@@ -194,21 +194,13 @@ public static class Demo
             new Organization()
         };
 
-        // 1. RandomInit через интерфейс — без is/as/кастов
+        // RandomInit через интерфейс — без is/as/кастов
         Console.WriteLine("--- RandomInit() через IInit ---");
         for (int i = 0; i < items.Length; i++)
         {
             items[i].RandomInit();
-            Console.WriteLine($"[{i}] {items[i].GetType().Name,-15} → {items[i]}");
+            Console.WriteLine($"[{i}] {items[i].GetType().Name,-15} => {items[i]}");
         }
-
-        // 2. Просмотр всего массива через ToString.
-        //    IInit не содержит Show — поэтому используем ToString (наследуется от object),
-        //    доступный через IInit-ссылку. У Polity — sealed override с ToStringExtra,
-        //    у Organization — свой override. Один механизм для всех.
-        Console.WriteLine("\n--- Просмотр массива через ToString (после Init) ---");
-        foreach (IInit x in items)
-            Console.WriteLine($"{x}");
     }
 
     private static void ShowClones()
