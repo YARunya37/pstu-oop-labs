@@ -201,6 +201,13 @@ public static class Demo
             items[i].RandomInit();
             Console.WriteLine($"[{i}] {items[i].GetType().Name,-15} => {items[i]}");
         }
+
+        // Init
+        for (int i = 0; i < items.Length; i++)
+        {
+            items[i].Init();
+            Console.WriteLine($"[{i}] {items[i].GetType().Name,-15} => {items[i]}");
+        }
     }
 
     private static void ShowClones()
