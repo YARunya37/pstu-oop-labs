@@ -7,35 +7,18 @@ public static class Demo
     // Сравнение обычных и виртуальных функций
     public static void ShowTask1()
     {
-        // Массив из всех типов иерархии
-        Polity[] states =
-        {
-            new Polity(),
-            new Republic(),
-            new Monarchy(),
-            new Kingdom()
-        };
-        foreach (Polity p in states)
+        Polity[] states = { new Polity(), new Republic(), new Monarchy(), new Kingdom() };
+        
+        foreach (Polity p in states) 
             p.RandomInit();
 
-        // Просмотр ОБЫЧНОЙ (невиртуальной) функцией.
-        // Статическое связывание: для всех вызывается Polity.ShowBaseInfo.
-        Console.WriteLine("=== Обычная (невиртуальная) функция ===");
-        foreach (Polity p in states)
-        {
+        Console.WriteLine("=== Невиртуальная функция: все вызовы — Polity ===");
+        foreach (Polity p in states) 
             p.ShowRegularInfo();
-            Console.WriteLine();
-        }
 
-        // Просмотр ВИРТУАЛЬНОЙ функцией.
-        // Динамическое связывание: у каждого своя override-версия.
-        Console.WriteLine("\n=== Виртуальная функция ===");
-        foreach (Polity p in states)
-        {
+        Console.WriteLine("\n=== Виртуальная функция: у каждого своя ===");
+        foreach (Polity p in states) 
             p.ShowVirtualInfo();
-            Console.WriteLine();
-        }
-
     }
 
     // RTTI, запросы
