@@ -2,7 +2,7 @@
 
 namespace Polities;
 
-public class Polity : IInit, IComparable
+public class Polity : IInit, IComparable, ICloneable
 {
     public string Name
     {
@@ -244,6 +244,19 @@ public class Polity : IInit, IComparable
             throw new ArgumentException();
 
         return Name.CompareTo(other.Name);
+    }
+
+    // ICLONABLE
+    // Один для всей иерархии. Если в наследнике появится поле, которое нужно глубоко клонировать, 
+    // то необходимо переопределять Clone
+
+    public object Clone()
+    {
+        Polity clonePolity = (Polity)this.MemberwiseClone();
+        // Отдельно создаём новый независимый объект для currency
+        clonePolity.Currency = new Currency(this.Currency);
+
+        return clonePolity;
     }
 
     // Методы object.
