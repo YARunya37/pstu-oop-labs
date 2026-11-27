@@ -8,16 +8,16 @@ public static class Demo
     public static void ShowTask1()
     {
         Polity[] states = { new Polity(), new Republic(), new Monarchy(), new Kingdom() };
-        
-        foreach (Polity p in states) 
+
+        foreach (Polity p in states)
             p.RandomInit();
 
         Console.WriteLine("=== Невиртуальная функция: все вызовы — Polity ===");
-        foreach (Polity p in states) 
+        foreach (Polity p in states)
             p.ShowRegularInfo();
 
         Console.WriteLine("\n=== Виртуальная функция: у каждого своя ===");
-        foreach (Polity p in states) 
+        foreach (Polity p in states)
             p.ShowVirtualInfo();
     }
 
