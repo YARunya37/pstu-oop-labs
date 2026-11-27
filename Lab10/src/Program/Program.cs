@@ -17,7 +17,7 @@ internal static class Program
         Console.ReadLine();
 
         // ЗАДАНИЕ 3
-
+        Demo.ShowTask3();
         Console.WriteLine("Нажмите enter, чтобы продолжить");
         Console.ReadLine();
 
