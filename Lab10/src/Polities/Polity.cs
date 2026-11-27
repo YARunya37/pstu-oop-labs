@@ -231,6 +231,9 @@ public class Polity : IInit, IComparable, ICloneable
             $"Население: {Population:N0}, Площадь: {Area:N2}");
     }
 
+    // Поверхностное клонирование
+    public Polity ShallowCopy() => (Polity)MemberwiseClone();
+    
     // ICOMPARABLE
 
     public int CompareTo(object? obj)
