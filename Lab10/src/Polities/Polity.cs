@@ -173,6 +173,7 @@ public class Polity : IInit, IComparable, ICloneable
         InitCapital();
         InitPopulation();
         InitArea();
+        InitCurrency();
         InitExtra();
     }
     void InitName()
