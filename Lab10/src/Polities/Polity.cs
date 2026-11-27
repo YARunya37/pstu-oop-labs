@@ -252,7 +252,7 @@ public class Polity : IInit, IComparable, ICloneable
 
     // ICLONABLE
     // Один для всей иерархии. Если в наследнике появится поле, которое нужно глубоко клонировать, 
-    // то необходимо переопределять Clone
+    // то необходимо переделывать Clone
 
     public object Clone()
     {
