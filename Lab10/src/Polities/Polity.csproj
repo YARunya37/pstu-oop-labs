@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\IOUtils\IOUtils.csproj" />
+    <ProjectReference Include="..\InitLib\InitLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

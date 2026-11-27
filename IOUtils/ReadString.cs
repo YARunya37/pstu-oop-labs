@@ -5,6 +5,24 @@ namespace IOUtils
 {
     public static class ReadString
     {
+        public static int ReadIntChoice(string message, string errorMessage,params int[] availableValues)
+    {
+        int value = 0;
+        bool isValid = false;
+
+        while (!isValid)
+        {
+            value = ReadNumberValue<int>(message);
+
+            if (availableValues.Contains(value))
+                isValid = true;
+            else
+                Console.WriteLine(errorMessage);
+        }
+
+        return value;
+    }
+
         public static string ReadStringValue(string message, string errorMessage = "")
         {
             Console.Write(message);
