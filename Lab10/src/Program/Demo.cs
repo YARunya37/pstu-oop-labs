@@ -102,16 +102,13 @@ public static class Demo
         // Вторая часть - демонстрация работы наследников IInit
         ShowInitable();
 
-        // ==========================================================
-        // БЛОК 3. Clone / ShallowCopy — после реализации ICloneable
-        // ==========================================================
-        // Console.WriteLine("\n========== БЛОК 3. CLONE / SHALLOWCOPY ==========\n");
-        // ...
+        // Третья часть - поверхностное и глубокое клонирование
+        ShowClones();
     }
 
     private static void ShowSortAndBinary()
     {
-        
+
         // ==========================================================
         // БЛОК 1. СОРТИРОВКА И БИНАРНЫЙ ПОИСК
         // ==========================================================
@@ -193,7 +190,7 @@ public static class Demo
 
     private static void ShowInitable()
     {
-        
+
         // ==========================================================
         // БЛОК 2. IInit[] — группировка по поведению
         // ==========================================================
@@ -230,5 +227,30 @@ public static class Demo
             Console.WriteLine($"{x}");
     }
 
+    private static void ShowClones()
+    {
+        // ==========================================================
+        // БЛОК 3. CLONE / SHALLOWCOPY
+        // ==========================================================
+        Console.WriteLine("\n========== БЛОК 3. CLONE / SHALLOWCOPY ==========\n");
 
+        Kingdom original = new Kingdom(
+            "Королевство", "Столица", 1_000_000u, 500_000.0,
+            "Александр", "Король", "Романовы", true,
+            "Вестминстер", 5u, 1000.0)
+        {
+            Currency = new Currency("Фунт", "£")
+        };
+
+        // ShallowCopy: Currency — общая ссылка
+        Kingdom shallow = (Kingdom)original.ShallowCopy();
+        shallow.Currency.Name = "Изменено";
+        Console.WriteLine($"ShallowCopy: original.Currency.Name = {original.Currency.Name}  (ожидается \"Изменено\")");
+
+        // Восстанавливаем валюту и делаем глубокий Clone
+        original.Currency = new Currency("Фунт", "£");
+        Kingdom deep = (Kingdom)original.Clone();
+        deep.Currency.Name = "Другое";
+        Console.WriteLine($"Clone:       original.Currency.Name = {original.Currency.Name}  (ожидается \"Фунт\")");
+    }
 }
